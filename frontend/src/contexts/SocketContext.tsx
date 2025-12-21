@@ -29,6 +29,10 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+      return;
+    }
+
     const token = localStorage.getItem('accessToken');
     if (!token) return;
 
@@ -56,15 +60,21 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     // Task events are handled by React Query refetching
     newSocket.on('task:created', () => {
       // Trigger refetch via window event
-      window.dispatchEvent(new CustomEvent('task-update'));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('task-update'));
+      }
     });
 
     newSocket.on('task:updated', () => {
-      window.dispatchEvent(new CustomEvent('task-update'));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('task-update'));
+      }
     });
 
     newSocket.on('task:deleted', () => {
-      window.dispatchEvent(new CustomEvent('task-update'));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('task-update'));
+      }
     });
 
     socketRef.current = newSocket;

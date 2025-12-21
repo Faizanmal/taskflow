@@ -27,6 +27,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = async () => {
     try {
+      if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+        setIsLoading(false);
+        return;
+      }
       const token = localStorage.getItem('accessToken');
       if (!token) {
         setIsLoading(false);
@@ -36,7 +40,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await api.get<ApiResponse<{ user: User }>>('/auth/me');
       setUser(response.data.data.user);
     } catch {
-      localStorage.removeItem('accessToken');
+      if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
+        localStorage.removeItem('accessToken');
+      }
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -46,14 +52,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (data: LoginInput) => {
     const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', data);
     const { user, accessToken } = response.data.data;
-    localStorage.setItem('accessToken', accessToken);
+    if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
+      localStorage.setItem('accessToken', accessToken);
+    }
     setUser(user);
   };
 
   const register = async (data: RegisterInput) => {
     const response = await api.post<ApiResponse<AuthResponse>>('/auth/register', data);
     const { user, accessToken } = response.data.data;
-    localStorage.setItem('accessToken', accessToken);
+    if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
+      localStorage.setItem('accessToken', accessToken);
+    }
     setUser(user);
   };
 
@@ -63,7 +73,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // Ignore logout errors
     } finally {
-      localStorage.removeItem('accessToken');
+      if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
+        localStorage.removeItem('accessToken');
+      }
       setUser(null);
     }
   };

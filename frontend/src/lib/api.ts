@@ -14,7 +14,7 @@ export const api = axios.create({
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Token is stored in cookie, but we also check localStorage for SSR
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
       const token = localStorage.getItem('accessToken');
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -26,7 +26,7 @@ api.interceptors.request.use(
 );
 
 // Only add response interceptor on client
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
   api.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {

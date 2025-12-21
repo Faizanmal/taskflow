@@ -30,8 +30,10 @@ export function useTasks(filters: TaskFilters = {}) {
       queryClient.invalidateQueries({ queryKey: taskKeys.all });
     };
 
-    window.addEventListener('task-update', handleUpdate);
-    return () => window.removeEventListener('task-update', handleUpdate);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('task-update', handleUpdate);
+      return () => window.removeEventListener('task-update', handleUpdate);
+    }
   }, [queryClient]);
 
   return useQuery({

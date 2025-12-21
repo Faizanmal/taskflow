@@ -26,7 +26,11 @@ export default function NotFound() {
             Go Home
           </Link>
           <button
-            onClick={() => window.history.back()}
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.history) {
+                window.history.back();
+              }
+            }}
             className="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 bg-transparent text-gray-700 rounded-lg hover:bg-gray-50 transition-all focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
             <ArrowLeft className="w-5 h-5" />
