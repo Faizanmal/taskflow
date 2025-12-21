@@ -25,22 +25,25 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Only add response interceptor on client
-if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
-  api.interceptors.response.use(
-    (response) => response,
-    (error: AxiosError) => {
-      if (error.response?.status === 401) {
+// Response interceptor - SSR-safe
+// The interceptor itself is registered on both client and server,
+// but the logic inside only runs on client
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    // Only handle redirects on client-side
+    if (typeof window !== 'undefined' && error.response?.status === 401) {
+      if (typeof localStorage !== 'undefined') {
         localStorage.removeItem('accessToken');
-        // Only redirect if not already on auth pages
-        if (!window.location.pathname.startsWith('/auth')) {
-          window.location.href = '/auth/login';
-        }
       }
-      return Promise.reject(error);
+      // Only redirect if not already on auth pages
+      if (typeof window.location !== 'undefined' && !window.location.pathname.startsWith('/auth')) {
+        window.location.href = '/auth/login';
+      }
     }
-  );
-}
+    return Promise.reject(error);
+  }
+);
 
 // API modules
 export const meetingsAPI = {
