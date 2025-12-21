@@ -34,6 +34,7 @@ export function useTasks(filters: TaskFilters = {}) {
       window.addEventListener('task-update', handleUpdate);
       return () => window.removeEventListener('task-update', handleUpdate);
     }
+    return;
   }, [queryClient]);
 
   return useQuery({
