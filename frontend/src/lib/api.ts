@@ -25,23 +25,22 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor for error handling
-api.interceptors.response.use(
-  (response) => response,
-  (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      // Clear auth and redirect to login
-      if (typeof window !== 'undefined') {
+// Only add response interceptor on client
+if (typeof window !== 'undefined') {
+  api.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+      if (error.response?.status === 401) {
         localStorage.removeItem('accessToken');
         // Only redirect if not already on auth pages
         if (!window.location.pathname.startsWith('/auth')) {
           window.location.href = '/auth/login';
         }
       }
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
-);
+  );
+}
 
 // API modules
 export const meetingsAPI = {
