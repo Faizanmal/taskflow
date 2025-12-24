@@ -10,6 +10,8 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+// ==================== USER & AUTH ====================
+
 // User model for authentication and task ownership
 model User {
   id        String   @id @default(cuid())
@@ -17,41 +19,354 @@ model User {
   password  String
   name      String
   avatar    String?
+  theme     String   @default("system") // "light", "dark", "system"
+  accentColor String @default("blue") // Custom accent color
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
-  createdTasks  Task[]         @relation("TaskCreator")
-  assignedTasks Task[]         @relation("TaskAssignee")
-  notifications Notification[]
+  createdTasks          Task[]         @relation("TaskCreator")
+  assignedTasks         Task[]         @relation("TaskAssignee")
+  notifications         Notification[]
+  workspaceMemberships  WorkspaceMember[]
+  workspaceInvites      WorkspaceInvite[] @relation("InvitedUser")
+  sentInvites           WorkspaceInvite[] @relation("InvitedBy")
+  comments              Comment[]
+  mentions              Mention[]
+  timeLogs              TimeLog[]
+  notificationPrefs     NotificationPreference?
+  createdTemplates      TaskTemplate[] @relation("TemplateCreator")
 
   @@map("users")
 }
+
+// Notification preferences per user
+model NotificationPreference {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Email notifications
+  emailTaskAssigned     Boolean  @default(true)
+  emailTaskCompleted    Boolean  @default(true)
+  emailTaskDueSoon      Boolean  @default(true)
+  emailCommentMention   Boolean  @default(true)
+  emailWeeklyDigest     Boolean  @default(true)
+  
+  // Push notifications
+  pushTaskAssigned      Boolean  @default(true)
+  pushTaskCompleted     Boolean  @default(true)
+  pushTaskDueSoon       Boolean  @default(true)
+  pushCommentMention    Boolean  @default(true)
+  
+  // In-app notifications
+  inAppTaskAssigned     Boolean  @default(true)
+  inAppTaskCompleted    Boolean  @default(true)
+  inAppTaskDueSoon      Boolean  @default(true)
+  inAppCommentMention   Boolean  @default(true)
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("notification_preferences")
+}
+
+// ==================== WORKSPACES ====================
+
+// Workspace model for team collaboration
+model Workspace {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  slug        String   @unique
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  members     WorkspaceMember[]
+  invites     WorkspaceInvite[]
+  tasks       Task[]
+  templates   TaskTemplate[]
+
+  @@map("workspaces")
+}
+
+// Workspace membership with roles
+model WorkspaceMember {
+  id          String   @id @default(cuid())
+  role        String   @default("MEMBER") // "ADMIN", "MEMBER", "VIEWER"
+  joinedAt    DateTime @default(now())
+
+  // Relations
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([workspaceId])
+  @@index([userId])
+  @@map("workspace_members")
+}
+
+// Workspace invitations
+model WorkspaceInvite {
+  id          String   @id @default(cuid())
+  email       String
+  role        String   @default("MEMBER")
+  token       String   @unique
+  status      String   @default("PENDING") // "PENDING", "ACCEPTED", "DECLINED", "EXPIRED"
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  // Relations
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  invitedById String
+  invitedBy   User      @relation("InvitedBy", fields: [invitedById], references: [id], onDelete: Cascade)
+  invitedUserId String?
+  invitedUser   User?   @relation("InvitedUser", fields: [invitedUserId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([token])
+  @@index([email])
+  @@map("workspace_invites")
+}
+
+// ==================== TASKS ====================
 
 // Task model with status, priority, and assignment tracking
 model Task {
   id          String   @id @default(cuid())
   title       String
-  description String?
+  description String?  // Supports rich text (HTML)
   status      String   @default("TODO")
   priority    String   @default("MEDIUM")
   dueDate     DateTime?
+  startDate   DateTime?
+  position    Int      @default(0) // For Kanban ordering
+  estimatedTime Int?   // Estimated time in minutes
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // Recurring task settings
+  isRecurring       Boolean  @default(false)
+  recurringPattern  String?  // "DAILY", "WEEKLY", "MONTHLY", "YEARLY", "CUSTOM"
+  recurringInterval Int?     // Every X days/weeks/months
+  recurringDays     String?  // JSON array of days for weekly (e.g., ["MON", "WED", "FRI"])
+  recurringEndDate  DateTime?
+  lastRecurrence    DateTime?
+  parentRecurringId String?  // Reference to parent recurring task
+  parentRecurring   Task?    @relation("RecurringTasks", fields: [parentRecurringId], references: [id], onDelete: SetNull)
+  recurringInstances Task[]  @relation("RecurringTasks")
 
   // Relations
   creatorId   String
   creator     User   @relation("TaskCreator", fields: [creatorId], references: [id], onDelete: Cascade)
   assigneeId  String?
   assignee    User?  @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  
+  // Workspace relation (optional for personal tasks)
+  workspaceId String?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  
+  // Subtasks
+  parentTaskId String?
+  parentTask   Task?   @relation("Subtasks", fields: [parentTaskId], references: [id], onDelete: Cascade)
+  subtasks     Task[]  @relation("Subtasks")
+  
+  // Dependencies
+  dependsOn    TaskDependency[] @relation("DependentTask")
+  dependedBy   TaskDependency[] @relation("DependencyTask")
+  
+  // Other relations
+  comments     Comment[]
+  attachments  Attachment[]
+  timeLogs     TimeLog[]
+  
+  // Template reference
+  templateId   String?
+  template     TaskTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
 
   @@index([creatorId])
   @@index([assigneeId])
+  @@index([workspaceId])
+  @@index([parentTaskId])
   @@index([status])
   @@index([priority])
   @@index([dueDate])
+  @@index([position])
   @@map("tasks")
 }
+
+// Task dependencies (Task B depends on Task A)
+model TaskDependency {
+  id          String   @id @default(cuid())
+  type        String   @default("FINISH_TO_START") // "FINISH_TO_START", "START_TO_START", "FINISH_TO_FINISH", "START_TO_FINISH"
+  createdAt   DateTime @default(now())
+
+  // Task that depends on another
+  dependentTaskId String
+  dependentTask   Task   @relation("DependentTask", fields: [dependentTaskId], references: [id], onDelete: Cascade)
+  
+  // Task that must be completed first
+  dependencyTaskId String
+  dependencyTask   Task   @relation("DependencyTask", fields: [dependencyTaskId], references: [id], onDelete: Cascade)
+
+  @@unique([dependentTaskId, dependencyTaskId])
+  @@index([dependentTaskId])
+  @@index([dependencyTaskId])
+  @@map("task_dependencies")
+}
+
+// ==================== COMMENTS & DISCUSSIONS ====================
+
+// Comments on tasks (threaded)
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   // Supports rich text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // Threading
+  parentId  String?
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+  
+  // Mentions
+  mentions  Mention[]
+
+  @@index([taskId])
+  @@index([authorId])
+  @@index([parentId])
+  @@map("comments")
+}
+
+// User mentions in comments
+model Mention {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Relations
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@index([commentId])
+  @@index([userId])
+  @@map("mentions")
+}
+
+// ==================== ATTACHMENTS ====================
+
+// File attachments on tasks
+model Attachment {
+  id          String   @id @default(cuid())
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int      // Size in bytes
+  url         String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  taskId      String
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@map("attachments")
+}
+
+// ==================== TIME TRACKING ====================
+
+// Time logs for tasks
+model TimeLog {
+  id          String   @id @default(cuid())
+  description String?
+  startTime   DateTime
+  endTime     DateTime?
+  duration    Int?     // Duration in minutes (calculated or manual)
+  isRunning   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  taskId      String
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([userId])
+  @@index([startTime])
+  @@map("time_logs")
+}
+
+// ==================== TEMPLATES ====================
+
+// Task templates for quick creation
+model TaskTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  taskTitle   String
+  taskDescription String?
+  taskPriority String  @default("MEDIUM")
+  estimatedTime Int?
+  isPublic    Boolean  @default(false) // Available to all workspace members
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  creatorId   String
+  creator     User     @relation("TemplateCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  workspaceId String?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  
+  // Subtask templates (JSON array)
+  subtaskTemplates String? // JSON array of subtask templates
+  
+  // Tasks created from this template
+  tasks       Task[]
+
+  @@index([creatorId])
+  @@index([workspaceId])
+  @@map("task_templates")
+}
+
+// ==================== SAVED FILTERS & VIEWS ====================
+
+// Custom saved filters/views
+model SavedFilter {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  filters     String   // JSON object with filter criteria
+  viewType    String   @default("LIST") // "LIST", "KANBAN", "CALENDAR", "GANTT"
+  isDefault   Boolean  @default(false)
+  isShared    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Can be user-specific or workspace-wide
+  userId      String?
+  workspaceId String?
+
+  @@index([userId])
+  @@index([workspaceId])
+  @@map("saved_filters")
+}
+
+// ==================== NOTIFICATIONS ====================
 
 // Notification model for real-time and persisted notifications
 model Notification {
@@ -68,6 +383,7 @@ model Notification {
 
   @@index([userId])
   @@index([read])
+  @@index([createdAt])
   @@map("notifications")
 }
 

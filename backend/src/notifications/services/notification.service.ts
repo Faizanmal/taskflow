@@ -113,4 +113,40 @@ export class NotificationService {
 
     this.eventsGateway.emitNotification(userId, notification);
   }
+
+  /**
+   * Create a generic notification
+   */
+  async create(data: {
+    userId: string;
+    type: string;
+    message: string;
+    data?: string;
+  }): Promise<Notification> {
+    const notification = await this.notificationRepository.create({
+      type: data.type,
+      message: data.message,
+      userId: data.userId,
+      data: data.data ? JSON.parse(data.data) : {},
+    });
+
+    this.eventsGateway.emitNotification(data.userId, notification);
+    return notification;
+  }
+
+  /**
+   * Delete notification
+   */
+  async delete(notificationId: string): Promise<void> {
+    await this.notificationRepository.delete(notificationId);
+  }
+
+  /**
+   * Delete old notifications (older than 30 days)
+   */
+  async deleteOldNotifications(): Promise<number> {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    return this.notificationRepository.deleteOlderThan(thirtyDaysAgo);
+  }
 }

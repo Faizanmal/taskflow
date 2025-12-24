@@ -86,4 +86,14 @@ export class NotificationRepository {
       where: { id },
     });
   }
+
+  /**
+   * Delete notifications older than a date
+   */
+  async deleteOlderThan(date: Date): Promise<number> {
+    const result = await this.prisma.notification.deleteMany({
+      where: { createdAt: { lt: date } },
+    });
+    return result.count;
+  }
 }

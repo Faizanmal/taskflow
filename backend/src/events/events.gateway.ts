@@ -155,6 +155,64 @@ export class EventsGateway
   }
 
   /**
+   * Emit workspace updated event
+   */
+  emitWorkspaceUpdated(workspace: { id: string; name: string; [key: string]: any }): void {
+    this.server.emit('workspace:updated', workspace);
+    this.logger.debug(`Emitted workspace:updated for workspace ${workspace.id}`);
+  }
+
+  /**
+   * Emit comment created event
+   */
+  emitCommentCreated(taskId: string, comment: { id: string; [key: string]: any }): void {
+    this.server.emit('comment:created', { taskId, comment });
+    this.logger.debug(`Emitted comment:created for task ${taskId}`);
+  }
+
+  /**
+   * Emit comment updated event
+   */
+  emitCommentUpdated(taskId: string, comment: { id: string; [key: string]: any }): void {
+    this.server.emit('comment:updated', { taskId, comment });
+    this.logger.debug(`Emitted comment:updated for task ${taskId}`);
+  }
+
+  /**
+   * Emit comment deleted event
+   */
+  emitCommentDeleted(taskId: string, commentId: string): void {
+    this.server.emit('comment:deleted', { taskId, commentId });
+    this.logger.debug(`Emitted comment:deleted for task ${taskId}`);
+  }
+
+  /**
+   * Join workspace room
+   */
+  @SubscribeMessage('join:workspace')
+  handleJoinWorkspace(client: Socket, workspaceId: string): void {
+    client.join(`workspace:${workspaceId}`);
+    this.logger.debug(`Client ${client.id} joined workspace ${workspaceId}`);
+  }
+
+  /**
+   * Leave workspace room
+   */
+  @SubscribeMessage('leave:workspace')
+  handleLeaveWorkspace(client: Socket, workspaceId: string): void {
+    client.leave(`workspace:${workspaceId}`);
+    this.logger.debug(`Client ${client.id} left workspace ${workspaceId}`);
+  }
+
+  /**
+   * Emit to workspace members
+   */
+  emitToWorkspace(workspaceId: string, event: string, data: any): void {
+    this.server.to(`workspace:${workspaceId}`).emit(event, data);
+    this.logger.debug(`Emitted ${event} to workspace ${workspaceId}`);
+  }
+
+  /**
    * Get online users count
    */
   getOnlineUsersCount(): number {

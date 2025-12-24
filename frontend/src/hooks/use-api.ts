@@ -516,10 +516,17 @@ export function useDeleteWorkspace() {
 }
 
 // Workspace Members
-export function useWorkspaceMembers() {
+// NOTE: Members are accessed via workspace.members - no separate listMembers endpoint
+// This hook is kept for backwards compatibility but returns an empty query
+export function useWorkspaceMembers(workspaceId?: string) {
   return useQuery({
-    queryKey: ['workspace-members'],
-    queryFn: () => workspacesAPI.listMembers(),
+    queryKey: ['workspace-members', workspaceId],
+    queryFn: async () => {
+      if (!workspaceId) return [];
+      const response = await workspacesAPI.get(workspaceId);
+      return response.data?.data?.workspace?.members ?? [];
+    },
+    enabled: !!workspaceId,
   });
 }
 
@@ -527,10 +534,11 @@ export function useUpdateWorkspaceMember() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<WorkspaceMember> }) =>
-      workspacesAPI.updateMember(id, data),
+    mutationFn: ({ workspaceId, memberId, role }: { workspaceId: string; memberId: string; role: string }) =>
+      workspacesAPI.updateMemberRole(workspaceId, memberId, role),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspace-members'] });
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
     },
   });
 }
@@ -539,18 +547,23 @@ export function useRemoveWorkspaceMember() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (id: string) => workspacesAPI.removeMember(id),
+    mutationFn: ({ workspaceId, memberId }: { workspaceId: string; memberId: string }) => 
+      workspacesAPI.removeMember(workspaceId, memberId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspace-members'] });
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
     },
   });
 }
 
 // Workspace Invitations
+// NOTE: No listInvitations endpoint exists - invitations work via tokens
 export function useWorkspaceInvitations() {
+  // This returns an empty array as there's no list endpoint
+  // Invitations are accessed via tokens, not listed
   return useQuery({
     queryKey: ['workspace-invitations'],
-    queryFn: () => workspacesAPI.listInvitations(),
+    queryFn: async () => [] as unknown[],
   });
 }
 
@@ -558,10 +571,11 @@ export function useInviteWorkspaceMember() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (data: { workspace: string; email: string; role: string; message?: string }) =>
-      workspacesAPI.createInvitation(data),
+    mutationFn: (data: { workspaceId: string; email: string; role: string }) =>
+      workspacesAPI.inviteMember(data.workspaceId, { email: data.email, role: data.role }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspace-invitations'] });
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
     },
   });
 }
@@ -570,7 +584,7 @@ export function useAcceptWorkspaceInvitation() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (id: string) => workspacesAPI.acceptInvitation(id),
+    mutationFn: (token: string) => workspacesAPI.acceptInvite(token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspace-invitations'] });
       queryClient.invalidateQueries({ queryKey: ['workspaces'] });
@@ -579,11 +593,15 @@ export function useAcceptWorkspaceInvitation() {
   });
 }
 
+// NOTE: No declineInvitation endpoint exists - invitations simply expire
 export function useDeclineWorkspaceInvitation() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (id: string) => workspacesAPI.declineInvitation(id),
+    mutationFn: async (_token: string) => {
+      // No decline endpoint - invitations just expire
+      return;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspace-invitations'] });
     },

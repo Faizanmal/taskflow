@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSocket } from '@/contexts/SocketContext';
 import NotificationDropdown from './NotificationDropdown';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { IconButton } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
@@ -25,7 +26,7 @@ export default function Header() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, type: 'spring' }}
-      className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-30 shadow-sm"
+      className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 shadow-sm"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -52,7 +53,7 @@ export default function Header() {
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
             >
               <motion.span
                 animate={{
@@ -68,15 +69,18 @@ export default function Header() {
                   isConnected ? 'bg-green-500' : 'bg-red-500'
                 )}
               />
-              <span className="text-xs font-medium text-gray-600">
+              <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
                 {isConnected ? 'Connected' : 'Disconnected'}
               </span>
             </motion.div>
 
+            {/* Theme toggle */}
+            <ThemeToggle />
+
             <NotificationDropdown />
 
             {/* User menu */}
-            <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
+            <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
               <Link
                 href="/profile"
                 className="hidden sm:block group"
@@ -85,10 +89,10 @@ export default function Header() {
                   whileHover={{ scale: 1.02 }}
                   className="text-right"
                 >
-                  <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors">
                     {user?.name}
                   </p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
                 </motion.div>
               </Link>
 
