@@ -33,7 +33,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const token = localStorage.getItem('accessToken');
+    const token = window.localStorage.getItem('accessToken');
     if (!token) return;
 
     const newSocket = io(`${WS_URL}/events`, {

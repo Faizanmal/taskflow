@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, LoginInput, RegisterInput, AuthResponse, ApiResponse } from '@/lib/types';
-import api from '@/lib/api';
+import api, { setupResponseInterceptor } from '@/lib/api';
 
 interface AuthContextType {
   user: User | null;
@@ -20,6 +20,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Initialize response interceptor on client-side only
+  useEffect(() => {
+    setupResponseInterceptor();
+  }, []);
+
   // Check for existing auth on mount
   useEffect(() => {
     checkAuth();
@@ -31,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
         return;
       }
-      const token = localStorage.getItem('accessToken');
+      const token = window.localStorage.getItem('accessToken');
       if (!token) {
         setIsLoading(false);
         return;
@@ -41,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(response.data.data.user);
     } catch {
       if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
-        localStorage.removeItem('accessToken');
+        window.localStorage.removeItem('accessToken');
       }
       setUser(null);
     } finally {
@@ -53,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', data);
     const { user, accessToken } = response.data.data;
     if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
-      localStorage.setItem('accessToken', accessToken);
+      window.localStorage.setItem('accessToken', accessToken);
     }
     setUser(user);
   };
@@ -62,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const response = await api.post<ApiResponse<AuthResponse>>('/auth/register', data);
     const { user, accessToken } = response.data.data;
     if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
-      localStorage.setItem('accessToken', accessToken);
+      window.localStorage.setItem('accessToken', accessToken);
     }
     setUser(user);
   };
@@ -74,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Ignore logout errors
     } finally {
       if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
-        localStorage.removeItem('accessToken');
+        window.localStorage.removeItem('accessToken');
       }
       setUser(null);
     }

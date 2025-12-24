@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Header } from '@/components/layout';
@@ -19,10 +19,16 @@ interface ProfileFormData {
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, updateUser, isAuthenticated } = useAuth();
+  const { user, updateUser, isAuthenticated, isLoading: authLoading } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.replace('/auth/login');
+    }
+  }, [authLoading, isAuthenticated, router]);
 
   const {
     register,
@@ -35,8 +41,7 @@ export default function ProfilePage() {
     },
   });
 
-  if (!isAuthenticated) {
-    router.replace('/auth/login');
+  if (authLoading || !isAuthenticated) {
     return null;
   }
 

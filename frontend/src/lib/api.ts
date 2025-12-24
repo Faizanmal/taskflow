@@ -1,9 +1,31 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { API_URL } from './constants';
 
+// Polyfill for location in SSR to prevent ReferenceError in dependencies
+if (typeof window === 'undefined' && typeof global !== 'undefined' && typeof (global as any).location === 'undefined') {
+  try {
+    (global as any).location = {
+      href: '',
+      origin: '',
+      pathname: '',
+      search: '',
+      hash: '',
+      assign: () => {},
+      replace: () => {},
+      reload: () => {},
+      toString: () => '',
+    };
+  } catch (e) {
+    // Ignore errors if location cannot be defined
+  }
+}
+
 // Create axios instance
+const envApiUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseURL = (envApiUrl && envApiUrl.length > 0) ? envApiUrl : 'http://localhost:3001/api';
+
 export const api = axios.create({
-  baseURL: API_URL,
+  baseURL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -15,7 +37,7 @@ api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Token is stored in cookie, but we also check localStorage for SSR
     if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
-      const token = localStorage.getItem('accessToken');
+      const token = window.localStorage.getItem('accessToken');
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -25,25 +47,35 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor - SSR-safe
-// The interceptor itself is registered on both client and server,
-// but the logic inside only runs on client
-api.interceptors.response.use(
-  (response) => response,
-  (error: AxiosError) => {
-    // Only handle redirects on client-side
-    if (typeof window !== 'undefined' && error.response?.status === 401) {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem('accessToken');
-      }
-      // Only redirect if not already on auth pages
-      if (typeof window.location !== 'undefined' && !window.location.pathname.startsWith('/auth')) {
-        window.location.href = '/auth/login';
-      }
-    }
-    return Promise.reject(error);
+// Flag to ensure response interceptor is only set up once
+let responseInterceptorInitialized = false;
+
+// Setup response interceptor - call this from client-side code only
+export function setupResponseInterceptor() {
+  if (responseInterceptorInitialized || typeof window === 'undefined') {
+    return;
   }
-);
+  
+  responseInterceptorInitialized = true;
+  
+  api.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+      if (error.response?.status === 401) {
+        if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
+          window.localStorage.removeItem('accessToken');
+        }
+        // Only redirect if not already on auth pages
+        if (typeof window !== 'undefined' && window.location) {
+          if (!window.location.pathname.startsWith('/auth')) {
+            window.location.href = '/auth/login';
+          }
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
+}
 
 // API modules
 export const meetingsAPI = {
