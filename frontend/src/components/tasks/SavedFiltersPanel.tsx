@@ -69,7 +69,6 @@ export function SavedFiltersPanel({
   className,
 }: SavedFiltersPanelProps) {
   const { data: savedFilters = [], isLoading } = useSavedFilters();
-  const createFilter = useCreateSavedFilter();
   const deleteFilter = useDeleteSavedFilter();
   const setDefaultFilter = useSetDefaultFilter();
 
@@ -86,7 +85,7 @@ export function SavedFiltersPanel({
     currentFilters.search;
 
   const handleApplyFilter = (filter: SavedFilter) => {
-    const filterConfig = filter.filters as FilterConfig;
+    const filterConfig = JSON.parse(filter.filters) as FilterConfig;
     onApplyFilter(filterConfig);
     setIsPopoverOpen(false);
     toast.success(`Applied filter: ${filter.name}`);
@@ -94,12 +93,9 @@ export function SavedFiltersPanel({
 
   const handleSetDefault = async (filter: SavedFilter) => {
     try {
-      await setDefaultFilter.mutateAsync({
-        id: filter.id,
-        isDefault: !filter.isDefault,
-      });
+      await setDefaultFilter.mutateAsync(filter.id);
       toast.success(filter.isDefault ? 'Removed default' : 'Set as default');
-    } catch (error) {
+    } catch {
       toast.error('Failed to update default');
     }
   };
@@ -110,7 +106,7 @@ export function SavedFiltersPanel({
     try {
       await deleteFilter.mutateAsync(id);
       toast.success('Filter deleted');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete filter');
     }
   };
@@ -185,7 +181,7 @@ export function SavedFiltersPanel({
                           <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                         )}
                       </div>
-                      <FilterSummary filters={filter.filters as FilterConfig} />
+                      <FilterSummary filters={JSON.parse(filter.filters) as FilterConfig} />
                     </button>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
@@ -280,12 +276,12 @@ function SaveFilterForm({ filters, onSuccess }: SaveFilterFormProps) {
     try {
       await createFilter.mutateAsync({
         name,
-        filters: filters as Record<string, unknown>,
+        filters: JSON.stringify(filters),
         isDefault,
       });
       toast.success('Filter saved');
       onSuccess();
-    } catch (error) {
+    } catch {
       toast.error('Failed to save filter');
     }
   };

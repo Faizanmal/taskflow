@@ -1,20 +1,25 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 // Polyfill for location in SSR to prevent ReferenceError in dependencies
-if (typeof window === 'undefined' && typeof global !== 'undefined' && typeof (global as any).location === 'undefined') {
+if (typeof window === 'undefined' && typeof global !== 'undefined' && typeof (global as unknown as { location?: unknown }).location === 'undefined') {
   try {
-    (global as any).location = {
+    (global as unknown as { location: Location }).location = {
       href: '',
       origin: '',
       pathname: '',
       search: '',
       hash: '',
+      host: '',
+      hostname: '',
+      port: '',
+      protocol: '',
       assign: () => {},
       replace: () => {},
       reload: () => {},
       toString: () => '',
-    };
-  } catch (e) {
+      ancestorOrigins: [] as unknown as DOMStringList,
+    } as Location;
+  } catch {
     // Ignore errors if location cannot be defined
   }
 }

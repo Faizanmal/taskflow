@@ -209,10 +209,7 @@ export class TimeTrackingController {
    */
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async delete(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async delete(@Param('id') id: string, @CurrentUser('id') userId: string) {
     await this.timeTrackingService.delete(id, userId);
     return {
       success: true,

@@ -1,0 +1,163 @@
+{
+  "common": {
+    "loading": "იტვირთება...",
+    "error": "მოხდა შეცდომა",
+    "save": "შენახვა",
+    "cancel": "გაუქმება",
+    "delete": "წაშლა",
+    "edit": "რედაქტირება",
+    "create": "შექმნა",
+    "update": "განახლება",
+    "close": "დახურვა",
+    "confirm": "დადასტურება",
+    "search": "ძიება",
+    "noResults": "შედეგები ვერ მოიძებნა",
+    "logout": "გასვლა",
+    "settings": "პარამეტრები",
+    "profile": "პროფილი"
+  },
+  "auth": {
+    "login": "შესვლა",
+    "register": "რეგისტრაცია",
+    "email": "ელ. ფოსტა",
+    "password": "პაროლი",
+    "confirmPassword": "პაროლის დადასტურება",
+    "forgotPassword": "დაგავიწყდათ პაროლი?",
+    "loginSuccess": "წარმატებით შეხვედით",
+    "registerSuccess": "წარმატებით დარეგისტრირდით",
+    "logoutSuccess": "წარმატებით გამოხვედით"
+  },
+  "navigation": {
+    "dashboard": "დაფა",
+    "tasks": "ამოცანები",
+    "workspaces": "სამუშაო სივრცეები",
+    "templates": "შაბლონები",
+    "analytics": "ანალიტიკა",
+    "notifications": "შეტყობინებები",
+    "messages": "შეტყობინებები"
+  },
+  "tasks": {
+    "title": "ამოცანები",
+    "createTask": "ამოცანის შექმნა",
+    "editTask": "ამოცანის რედაქტირება",
+    "deleteTask": "ამოცანის წაშლა",
+    "taskTitle": "ამოცანის სათაური",
+    "description": "აღწერა",
+    "dueDate": "ვადა",
+    "assignee": "შემსრულებელი",
+    "noTasks": "ამოცანები ვერ მოიძებნა",
+    "taskCreated": "ამოცანა წარმატებით შეიქმნა",
+    "taskUpdated": "ამოცანა წარმატებით განახლდა",
+    "taskDeleted": "ამოცანა წარმატებით წაიშალა"
+  },
+  "status": {
+    "TODO": "გასაკეთებელი",
+    "IN_PROGRESS": "მიმდინარე",
+    "IN_REVIEW": "განხილვაში",
+    "COMPLETED": "დასრულებული"
+  },
+  "priority": {
+    "LOW": "დაბალი",
+    "MEDIUM": "საშუალო",
+    "HIGH": "მაღალი",
+    "URGENT": "გადაუდებელი"
+  },
+  "filters": {
+    "taskFilters": "ამოცანების ფილტრები",
+    "allStatuses": "ყველა სტატუსი",
+    "allPriorities": "ყველა პრიორიტეტი",
+    "allTasks": "ყველა ამოცანა",
+    "assignedToMe": "ჩემზე მინიჭებული",
+    "createdByMe": "ჩემ მიერ შექმნილი",
+    "overdue": "ვადაგადაცილებული",
+    "dateCreated": "შექმნის თარიღი",
+    "dueDate": "ვადა",
+    "priority": "პრიორიტეტი",
+    "status": "სტატუსი",
+    "sortBy": "დალაგება",
+    "asc": "აღმ",
+    "desc": "დაღმ",
+    "searchPlaceholder": "ამოცანების ძიება...",
+    "searchTasks": "ამოცანების ძიება",
+    "clearSearch": "ძიების გასუფთავება",
+    "selectView": "ხედის არჩევა",
+    "selectStatus": "სტატუსის არჩევა",
+    "selectPriority": "პრიორიტეტის არჩევა",
+    "selectSort": "დალაგების არჩევა",
+    "sortAscending": "ზრდადობით",
+    "sortDescending": "კლებადობით"
+  },
+  "workspaces": {
+    "title": "სამუშაო სივრცეები",
+    "createWorkspace": "სამუშაო სივრცის შექმნა",
+    "editWorkspace": "სამუშაო სივრცის რედაქტირება",
+    "deleteWorkspace": "სამუშაო სივრცის წაშლა",
+    "members": "წევრები",
+    "inviteMember": "წევრის მოწვევა",
+    "noWorkspaces": "სამუშაო სივრცეები ვერ მოიძებნა"
+  },
+  "commandPalette": {
+    "title": "ბრძანებების პანელი",
+    "placeholder": "აკრიფეთ ბრძანება ან მოძებნეთ...",
+    "noResults": "შედეგები ვერ მოიძებნა",
+    "tasks": "ამოცანები",
+    "workspaces": "სამუშაო სივრცეები",
+    "users": "მომხმარებლები",
+    "actions": "მოქმედებები",
+    "recentSearches": "ბოლო ძიებები"
+  },
+  "bulk": {
+    "selectAll": "ყველას მონიშვნა",
+    "deselectAll": "მონიშვნის მოხსნა",
+    "selected": "{{count}} მონიშნული",
+    "changeStatus": "სტატუსის შეცვლა",
+    "changePriority": "პრიორიტეტის შეცვლა",
+    "changeAssignee": "შემსრულებლის შეცვლა",
+    "deleteSelected": "მონიშნულის წაშლა",
+    "confirmDelete": "დარწმუნებული ხართ, რომ გსურთ {{count}} ამოცანის წაშლა?"
+  },
+  "export": {
+    "exportTasks": "ამოცანების ექსპორტი",
+    "exportCSV": "CSV ექსპორტი",
+    "exportJSON": "JSON ექსპორტი",
+    "importTasks": "ამოცანების იმპორტი",
+    "dragDropFile": "ჩააგდეთ ფაილი აქ ან დააჭირეთ ასარჩევად"
+  },
+  "theme": {
+    "light": "ნათელი",
+    "dark": "მუქი",
+    "system": "სისტემური",
+    "selectTheme": "თემის არჩევა"
+  },
+  "accessibility": {
+    "skipToContent": "მთავარ კონტენტზე გადასვლა",
+    "mainNavigation": "მთავარი ნავიგაცია",
+    "closeModal": "მოდალის დახურვა",
+    "openMenu": "მენიუს გახსნა",
+    "loading": "იტვირთება, გთხოვთ დაელოდოთ"
+  },
+  "notifications": {
+    "title": "შეტყობინებები",
+    "markAllRead": "ყველას წაკითხულად მონიშვნა",
+    "noNotifications": "შეტყობინებები არ არის",
+    "preferences": "შეტყობინებების პარამეტრები"
+  },
+  "analytics": {
+    "title": "ანალიტიკა",
+    "productivity": "პროდუქტიულობა",
+    "tasksCreated": "შექმნილი ამოცანები",
+    "tasksCompleted": "დასრულებული ამოცანები",
+    "timeTracked": "აღრიცხული დრო",
+    "streak": "მიმდინარე სერია",
+    "teamProductivity": "გუნდის პროდუქტიულობა"
+  },
+  "security": {
+    "twoFactorAuth": "ორფაქტორიანი ავთენტიფიკაცია",
+    "enable2FA": "2FA ჩართვა",
+    "disable2FA": "2FA გამორთვა",
+    "exportData": "ჩემი მონაცემების ექსპორტი",
+    "deleteAccount": "ანგარიშის წაშლა",
+    "gdprExport": "ყველა მონაცემის ჩამოტვირთვა (GDPR)",
+    "gdprDelete": "ანგარიშისა და მონაცემების სამუდამოდ წაშლა"
+  }
+}

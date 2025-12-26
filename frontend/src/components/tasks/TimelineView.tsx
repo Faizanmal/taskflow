@@ -392,9 +392,8 @@ interface GanttChartProps {
 export function GanttChart({
   tasks,
   onSelectTask,
-  showDependencies: _showDependencies = true,
   className,
-}: GanttChartProps) {
+}: Omit<GanttChartProps, 'showDependencies'>) {
   // Simplified Gantt - same as Timeline but with dependency lines
   // For production, you'd want a more sophisticated implementation
   // possibly using a library like react-gantt-timeline

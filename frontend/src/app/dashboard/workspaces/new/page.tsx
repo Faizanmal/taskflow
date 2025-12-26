@@ -57,7 +57,7 @@ export default function NewWorkspacePage() {
 
       toast.success('Workspace created!');
       router.push(`/dashboard/workspaces/${workspace.id}`);
-    } catch (error) {
+    } catch {
       toast.error('Failed to create workspace');
     }
   };

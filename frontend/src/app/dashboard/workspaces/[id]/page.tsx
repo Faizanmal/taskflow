@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useWorkspace } from '@/hooks/useWorkspaces';
 import { useTasks } from '@/hooks/useTasks';
+import { TaskStatus, TaskPriority } from '@/lib/types';
 import { KanbanBoard } from '@/components/tasks/KanbanBoard';
 import { CalendarView } from '@/components/tasks/CalendarView';
 import { TimelineView } from '@/components/tasks/TimelineView';
@@ -25,7 +26,6 @@ import { SavedFiltersPanel, QuickFilters } from '@/components/tasks/SavedFilters
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
 type ViewMode = 'kanban' | 'list' | 'calendar' | 'timeline';
@@ -55,6 +55,9 @@ export default function WorkspaceDetailPage() {
 
   const { data: tasks = [], isLoading: tasksLoading } = useTasks({
     ...filters,
+    status: filters.status as TaskStatus[] | undefined,
+    priority: filters.priority as TaskPriority[] | undefined,
+    sortBy: filters.sortBy as 'dueDate' | 'createdAt' | 'priority' | 'status' | undefined,
     search: search || undefined,
     workspaceId,
   });
@@ -116,7 +119,7 @@ export default function WorkspaceDetailPage() {
           <Link href={`/dashboard/workspaces/${workspaceId}/members`}>
             <Button variant="outline" size="sm">
               <Users className="h-4 w-4 mr-2" />
-              Members ({workspace._count.members})
+              Members ({workspace._count?.members || 0})
             </Button>
           </Link>
           <Link href={`/dashboard/workspaces/${workspaceId}/settings`}>

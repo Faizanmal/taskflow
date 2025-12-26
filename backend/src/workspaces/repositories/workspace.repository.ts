@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Prisma, Workspace, WorkspaceMember, WorkspaceInvite } from '@prisma/client';
+import {
+  Prisma,
+  Workspace,
+  WorkspaceMember,
+  WorkspaceInvite,
+} from '@prisma/client';
 
 /**
  * Workspace with members relation

@@ -16,6 +16,10 @@ import { TimeTrackingModule } from './time-tracking/time-tracking.module';
 import { AttachmentsModule } from './attachments/attachments.module';
 import { TemplatesModule } from './templates/templates.module';
 import { FiltersModule } from './filters/filters.module';
+import { SearchModule } from './search/search.module';
+import { SecurityModule } from './security/security.module';
+import { MessagingModule } from './messaging/messaging.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -39,6 +43,10 @@ import { FiltersModule } from './filters/filters.module';
     AttachmentsModule,
     TemplatesModule,
     FiltersModule,
+    SearchModule,
+    SecurityModule,
+    MessagingModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -44,4 +44,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
 Select.displayName = 'Select';
 
-export default Select;
+export { Select };
+export const SelectContent = () => null;
+export const SelectItem = () => null;
+export const SelectTrigger = () => null;
+export const SelectValue = () => null;

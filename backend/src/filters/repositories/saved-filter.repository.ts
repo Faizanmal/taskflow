@@ -98,7 +98,10 @@ export class SavedFilterRepository {
   /**
    * Clear default for user
    */
-  async clearDefaultForUser(userId: string, workspaceId?: string): Promise<void> {
+  async clearDefaultForUser(
+    userId: string,
+    workspaceId?: string,
+  ): Promise<void> {
     await this.prisma.savedFilter.updateMany({
       where: {
         userId,

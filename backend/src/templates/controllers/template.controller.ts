@@ -67,10 +67,7 @@ export class TemplateController {
    * GET /templates/:id - Get template by ID
    */
   @Get(':id')
-  async findOne(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async findOne(@Param('id') id: string, @CurrentUser('id') userId: string) {
     const template = await this.templateService.findOne(id, userId);
     return {
       success: true,
@@ -100,10 +97,7 @@ export class TemplateController {
    */
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async delete(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async delete(@Param('id') id: string, @CurrentUser('id') userId: string) {
     await this.templateService.delete(id, userId);
     return {
       success: true,

@@ -232,7 +232,11 @@ export class TimeLogRepository {
     tasksWorkedOn: number;
     averageTimePerTask: number;
     mostProductiveDay: string | null;
-    taskBreakdown: { taskId: string; taskTitle: string; totalMinutes: number }[];
+    taskBreakdown: {
+      taskId: string;
+      taskTitle: string;
+      totalMinutes: number;
+    }[];
   }> {
     const logs = await this.prisma.timeLog.findMany({
       where: {
@@ -250,10 +254,14 @@ export class TimeLogRepository {
     });
 
     // Calculate stats
-    const totalTimeSpent = logs.reduce((sum, log) => sum + (log.duration || 0), 0);
+    const totalTimeSpent = logs.reduce(
+      (sum, log) => sum + (log.duration || 0),
+      0,
+    );
     const taskIds = new Set(logs.map((log) => log.taskId));
     const tasksWorkedOn = taskIds.size;
-    const averageTimePerTask = tasksWorkedOn > 0 ? totalTimeSpent / tasksWorkedOn : 0;
+    const averageTimePerTask =
+      tasksWorkedOn > 0 ? totalTimeSpent / tasksWorkedOn : 0;
 
     // Find most productive day
     const dailyTotals = new Map<string, number>();
@@ -273,7 +281,10 @@ export class TimeLogRepository {
     }
 
     // Task breakdown
-    const taskTotals = new Map<string, { taskTitle: string; totalMinutes: number }>();
+    const taskTotals = new Map<
+      string,
+      { taskTitle: string; totalMinutes: number }
+    >();
     for (const log of logs) {
       const current = taskTotals.get(log.taskId);
       if (current) {

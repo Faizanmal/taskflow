@@ -108,8 +108,8 @@ export function KanbanBoard({ workspaceId, onTaskClick, className }: KanbanBoard
         newStatus: targetColumn,
         newPosition: targetIndex,
       });
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to move task');
+    } catch (error) {
+      toast.error((error as Error)?.message || 'Failed to move task');
     }
   };
 

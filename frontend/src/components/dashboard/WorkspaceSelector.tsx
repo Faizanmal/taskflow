@@ -8,8 +8,7 @@ import {
   Plus,
   Users,
 } from 'lucide-react';
-import { Workspace } from '@/lib/types';
-import { useWorkspaces, useLeaveWorkspace } from '@/hooks/useWorkspaces';
+import { useWorkspaces } from '@/hooks/useWorkspaces';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -20,7 +19,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import toast from 'react-hot-toast';
 
 interface WorkspaceSelectorProps {
   currentWorkspaceId?: string;
@@ -35,7 +33,6 @@ export function WorkspaceSelector({
 }: WorkspaceSelectorProps) {
   const router = useRouter();
   const { data: workspaces = [], isLoading } = useWorkspaces();
-  const leaveWorkspace = useLeaveWorkspace();
 
   const currentWorkspace = workspaces.find((w) => w.id === currentWorkspaceId);
 
@@ -45,20 +42,6 @@ export function WorkspaceSelector({
       router.push(`/dashboard/workspaces/${workspaceId}`);
     } else {
       router.push('/dashboard');
-    }
-  };
-
-  const handleLeaveWorkspace = async (workspaceId: string) => {
-    if (!confirm('Are you sure you want to leave this workspace?')) return;
-
-    try {
-      await leaveWorkspace.mutateAsync(workspaceId);
-      toast.success('Left workspace');
-      if (currentWorkspaceId === workspaceId) {
-        handleSelectWorkspace(null);
-      }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to leave workspace');
     }
   };
 

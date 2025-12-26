@@ -76,7 +76,6 @@ export class SubtaskService {
   async addDependency(
     taskId: string,
     dto: CreateDependencyDto,
-    _userId: string,
   ): Promise<DependencyWithRelations> {
     // Verify both tasks exist
     const [task, dependencyTask] = await Promise.all([
@@ -186,7 +185,7 @@ export class SubtaskService {
   /**
    * Reorder task (for Kanban)
    */
-  async reorderTask(dto: ReorderTasksDto, _userId: string): Promise<Task> {
+  async reorderTask(dto: ReorderTasksDto): Promise<Task> {
     const task = await this.prisma.task.findUnique({
       where: { id: dto.taskId },
       select: { id: true, status: true },

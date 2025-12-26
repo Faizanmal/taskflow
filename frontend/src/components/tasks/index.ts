@@ -14,3 +14,9 @@ export { CalendarView, MiniCalendar } from './CalendarView';
 export { TimelineView, GanttChart } from './TimelineView';
 export { KanbanBoard } from './KanbanBoard';
 export { CreateTaskDialog } from './CreateTaskDialog';
+
+// New bulk and data components
+export { default as BulkActionsToolbar } from './BulkActionsToolbar';
+export { default as VirtualizedTaskList } from './VirtualizedTaskList';
+export { default as ExportImportPanel } from './ExportImportPanel';
+export { default as DateRangeFilter } from './DateRangeFilter';

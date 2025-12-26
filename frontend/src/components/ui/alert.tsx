@@ -61,4 +61,6 @@ const Alert = ({ children, variant = 'info', title, onClose }: AlertProps) => {
   );
 };
 
-export default Alert;
+export { Alert };
+export const AlertDescription = ({ children }: { children: ReactNode }) => <div>{children}</div>;
+export const AlertTitle = ({ children }: { children: ReactNode }) => <div className="font-medium">{children}</div>;

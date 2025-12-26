@@ -1,12 +1,12 @@
 export { default as Button } from './button';
 export { default as Input } from './input';
-export { default as Select } from './select';
+export { Select } from './select';
 export { default as Textarea } from './textarea';
 export { default as Modal } from './modal';
 export { default as Skeleton, TaskCardSkeleton, DashboardSkeleton } from './skeleton';
 export { default as Badge } from './badge';
-export { default as Card, CardHeader, CardBody, CardFooter } from './card';
-export { default as Alert } from './alert';
+export { Card, CardHeader, CardBody, CardFooter } from './card';
+export { Alert } from './alert';
 export { default as Loading } from './loading';
 
 export { default as AnimatedCard } from './AnimatedCard';

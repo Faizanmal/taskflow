@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { formatDistanceToNow, format } from 'date-fns';
 import {
   ArrowLeft,
@@ -17,6 +18,7 @@ import {
   Circle,
 } from 'lucide-react';
 import { useTask, useUpdateTask, useDeleteTask } from '@/hooks/useTasks';
+import { TaskStatus, TaskPriority, UpdateTaskInput } from '@/lib/types';
 import { TaskComments } from '@/components/tasks/TaskComments';
 import { TimeTracker, PomodoroTimer } from '@/components/tasks/TimeTracker';
 import { TaskAttachments } from '@/components/tasks/TaskAttachments';
@@ -97,10 +99,10 @@ export default function TaskDetailPage() {
 
   const handleSave = async () => {
     try {
-      const updateData: Record<string, unknown> = {
+      const updateData: UpdateTaskInput = {
         title: editData.title,
-        status: editData.status as string,
-        priority: editData.priority as string,
+        status: editData.status as TaskStatus,
+        priority: editData.priority as TaskPriority,
       };
       if (editData.description) {
         updateData.description = editData.description;
@@ -110,11 +112,11 @@ export default function TaskDetailPage() {
       }
       await updateTask.mutateAsync({
         id: taskId,
-        data: updateData as any,
+        data: updateData,
       });
       setIsEditing(false);
       toast.success('Task updated');
-    } catch (error) {
+    } catch {
       toast.error('Failed to update task');
     }
   };
@@ -123,10 +125,10 @@ export default function TaskDetailPage() {
     try {
       await updateTask.mutateAsync({
         id: taskId,
-        data: { status: newStatus as any },
+        data: { status: newStatus as TaskStatus },
       });
       toast.success('Status updated');
-    } catch (error) {
+    } catch {
       toast.error('Failed to update status');
     }
   };
@@ -138,7 +140,7 @@ export default function TaskDetailPage() {
       await deleteTask.mutateAsync(taskId);
       toast.success('Task deleted');
       router.push('/dashboard');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete task');
     }
   };
@@ -308,8 +310,8 @@ export default function TaskDetailPage() {
             </TabsContent>
 
             <TabsContent value="time" className="space-y-6">
-              <TimeTracker taskId={taskId} taskTitle={task.title} />
-              <PomodoroTimer taskId={taskId} taskTitle={task.title} />
+              <TimeTracker taskId={taskId} />
+              <PomodoroTimer />
             </TabsContent>
           </Tabs>
         </div>
@@ -412,9 +414,11 @@ export default function TaskDetailPage() {
                   <>
                     <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                       {task.assignee.avatar ? (
-                        <img
+                        <Image
                           src={task.assignee.avatar}
                           alt={task.assignee.name}
+                          width={32}
+                          height={32}
                           className="h-full w-full rounded-full object-cover"
                         />
                       ) : (

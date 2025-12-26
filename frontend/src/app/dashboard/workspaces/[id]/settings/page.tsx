@@ -35,27 +35,15 @@ export default function WorkspaceSettingsPage() {
   const updateWorkspace = useUpdateWorkspace();
   const deleteWorkspace = useDeleteWorkspace();
 
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    icon: '',
-    color: '',
-  });
+  const [formData, setFormData] = useState(() => ({
+    name: workspace?.name || '',
+    description: workspace?.description || '',
+    icon: workspace?.icon || '',
+    color: (workspace?.color ?? COLORS[0]) as string,
+  }));
   const [hasChanges, setHasChanges] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
-
-  // Initialize form when workspace loads
-  useState(() => {
-    if (workspace) {
-      setFormData({
-        name: workspace.name,
-        description: workspace.description || '',
-        icon: workspace.icon || '',
-        color: workspace.color || COLORS[0],
-      });
-    }
-  });
 
   const isOwner = workspace?.ownerId === user?.id;
 
@@ -77,7 +65,7 @@ export default function WorkspaceSettingsPage() {
       });
       setHasChanges(false);
       toast.success('Settings saved');
-    } catch (error) {
+    } catch {
       toast.error('Failed to save settings');
     }
   };
@@ -92,7 +80,7 @@ export default function WorkspaceSettingsPage() {
       await deleteWorkspace.mutateAsync(workspaceId);
       toast.success('Workspace deleted');
       router.push('/dashboard/workspaces');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete workspace');
     }
   };
@@ -122,7 +110,7 @@ export default function WorkspaceSettingsPage() {
       name: workspace.name,
       description: workspace.description || '',
       icon: workspace.icon || '',
-      color: workspace.color || COLORS[0],
+      color: (workspace.color ?? COLORS[0]) as string,
     });
   }
 

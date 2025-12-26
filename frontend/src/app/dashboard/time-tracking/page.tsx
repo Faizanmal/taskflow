@@ -6,18 +6,14 @@ import {
   Clock,
   TrendingUp,
   BarChart3,
-  Calendar,
   ChevronLeft,
   ChevronRight,
   Loader2,
-  Play,
-  Pause,
   Target,
   Flame,
   Award,
 } from 'lucide-react';
 import {
-  useDailyReport,
   useWeeklyReport,
   useProductivityStats,
   useRunningTimer,
@@ -27,13 +23,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { ProductivityStats } from '@/lib/types';
 
 export default function TimeTrackingPage() {
   const [currentWeek, setCurrentWeek] = useState(new Date());
 
-  const weekStart = startOfWeek(currentWeek);
-  const weekEnd = endOfWeek(currentWeek);
-  const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd });
+  const weekStart = useMemo(() => startOfWeek(currentWeek), [currentWeek]);
+  const weekEnd = useMemo(() => endOfWeek(currentWeek), [currentWeek]);
+  const weekDays = useMemo(() => eachDayOfInterval({ start: weekStart, end: weekEnd }), [weekStart, weekEnd]);
 
   const { data: runningTimer } = useRunningTimer();
   const { data: stats, isLoading: statsLoading } = useProductivityStats(
@@ -116,7 +113,7 @@ export default function TimeTrackingPage() {
               <Clock className="h-6 w-6" style={{ color: 'var(--accent-color)' }} />
             </div>
           </div>
-          {stats?.dailyGoal && (
+          {stats?.dailyGoal && stats?.todayMinutes && (
             <div className="mt-3">
               <Progress
                 value={(stats.todayMinutes / stats.dailyGoal) * 100}
@@ -300,7 +297,7 @@ export default function TimeTrackingPage() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-medium">{formatDuration(log.duration)}</div>
+                    <div className="font-medium">{formatDuration(log.duration || 0)}</div>
                   </div>
                 </div>
               ))}
@@ -316,14 +313,14 @@ export default function TimeTrackingPage() {
             <div className="py-8 flex items-center justify-center">
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
-          ) : !weeklyReport?.taskBreakdown?.length ? (
+          ) : !stats?.taskBreakdown?.length ? (
             <div className="text-center py-8 text-gray-500">
               <Award className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>No tracked tasks this week</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {weeklyReport.taskBreakdown.slice(0, 5).map((item: any, idx: number) => {
+              {stats.taskBreakdown.slice(0, 5).map((item: ProductivityStats['taskBreakdown'][0], idx: number) => {
                 const percentage = weeklyTotal > 0 ? (item.totalMinutes / weeklyTotal) * 100 : 0;
 
                 return (

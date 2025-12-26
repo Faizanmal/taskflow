@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { useCreateTask } from '@/hooks/useTasks';
 import { useWorkspaces } from '@/hooks/useWorkspaces';
 import { useUsers } from '@/hooks/useUsers';
+import { TaskStatus, TaskPriority } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -73,8 +74,8 @@ export function CreateTaskDialog({
       const task = await createTask.mutateAsync({
         title: formData.title,
         description: formData.description || undefined,
-        priority: formData.priority as any,
-        status: formData.status as any,
+        priority: formData.priority as TaskPriority,
+        status: formData.status as TaskStatus,
         dueDate: formData.dueDate ? formData.dueDate.toISOString() : undefined,
         workspaceId: formData.workspaceId || undefined,
         assigneeId: formData.assigneeId || undefined,
@@ -92,7 +93,7 @@ export function CreateTaskDialog({
       });
       setOpen(false);
       onSuccess?.(task.id);
-    } catch (error) {
+    } catch {
       toast.error('Failed to create task');
     }
   };

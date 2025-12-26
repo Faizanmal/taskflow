@@ -7,7 +7,12 @@ import { Task, TaskDependency, Prisma } from '@prisma/client';
  */
 export type SubtaskWithRelations = Task & {
   creator: { id: string; name: string; email: string; avatar: string | null };
-  assignee: { id: string; name: string; email: string; avatar: string | null } | null;
+  assignee: {
+    id: string;
+    name: string;
+    email: string;
+    avatar: string | null;
+  } | null;
 };
 
 /**

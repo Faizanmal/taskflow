@@ -69,11 +69,11 @@ export class CommentService {
             userId,
             type: 'COMMENT_MENTION',
             message: `You were mentioned in a comment on "${task.title}"`,
-            data: JSON.stringify({
+            data: {
               taskId: task.id,
               taskTitle: task.title,
               commentId: comment.id,
-            }),
+            },
           });
         }
       }
@@ -94,11 +94,11 @@ export class CommentService {
           userId,
           type: 'NEW_COMMENT',
           message: `New comment on "${task.title}"`,
-          data: JSON.stringify({
+          data: {
             taskId: task.id,
             taskTitle: task.title,
             commentId: comment.id,
-          }),
+          },
         });
       }
     }
@@ -166,11 +166,11 @@ export class CommentService {
           userId: mentionedUserId,
           type: 'COMMENT_MENTION',
           message: `You were mentioned in a comment on "${task?.title}"`,
-          data: JSON.stringify({
+          data: {
             taskId: task?.id,
             taskTitle: task?.title,
             commentId: updatedComment.id,
-          }),
+          },
         });
       }
     }

@@ -1,7 +1,7 @@
 'use client';
 
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import { ReactNode, createContext, useContext, useState, useEffect } from 'react';
+import { ReactNode, createContext, useContext, useState, useEffect, useRef } from 'react';
 
 // Accent color options
 export const ACCENT_COLORS = [
@@ -41,21 +41,29 @@ export function ThemeProvider({
   children,
   defaultAccentColor = '#3b82f6',
 }: ThemeProviderProps) {
-  const [accentColor, setAccentColorState] = useState<AccentColor>(defaultAccentColor);
-  const [mounted, setMounted] = useState(false);
-
-  // Load accent color from localStorage on mount
-  useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem('accentColor') as AccentColor | null;
-    if (saved && ACCENT_COLORS.some((c) => c.value === saved)) {
-      setAccentColorState(saved);
+  // Initialize accent color from localStorage or default
+  const getInitialAccentColor = (): AccentColor => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('accentColor') as AccentColor | null;
+      if (saved && ACCENT_COLORS.some((c) => c.value === saved)) {
+        return saved;
+      }
     }
+    return defaultAccentColor;
+  };
+
+  const [accentColor, setAccentColorState] = useState<AccentColor>(getInitialAccentColor);
+  const [mounted, setMounted] = useState(false);
+  const mountedRef = useRef(false);
+
+  // Set mounted state
+  useEffect(() => {
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
   }, []);
 
   // Apply accent color CSS variables
   useEffect(() => {
-    if (!mounted) return;
+    mountedRef.current = true;
 
     const root = document.documentElement;
     
@@ -82,7 +90,7 @@ export function ThemeProvider({
     
     // RGB values for opacity usage
     root.style.setProperty('--accent-color-rgb', `${r}, ${g}, ${b}`);
-  }, [accentColor, mounted]);
+  }, [accentColor]);
 
   const setAccentColor = (color: AccentColor) => {
     setAccentColorState(color);

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowLeft,
   Users,
@@ -14,8 +15,6 @@ import {
   MoreVertical,
   Trash2,
   Loader2,
-  Copy,
-  Check,
   Clock,
 } from 'lucide-react';
 import {
@@ -95,31 +94,31 @@ export default function WorkspaceMembersPage() {
       toast.success(`Invitation sent to ${inviteEmail}`);
       setInviteEmail('');
       setIsInviteOpen(false);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to send invitation');
+    } catch (error) {
+      toast.error((error as Error).message || 'Failed to send invitation');
     }
   };
 
-  const handleUpdateRole = async (userId: string, newRole: Role) => {
+  const handleUpdateRole = async (memberId: string, newRole: Role) => {
     try {
       await updateRole.mutateAsync({
         workspaceId,
-        userId,
+        memberId,
         role: newRole,
       });
       toast.success('Role updated');
-    } catch (error) {
+    } catch {
       toast.error('Failed to update role');
     }
   };
 
-  const handleRemoveMember = async (userId: string, name: string) => {
+  const handleRemoveMember = async (memberId: string, name: string) => {
     if (!confirm(`Remove ${name} from this workspace?`)) return;
 
     try {
-      await removeMember.mutateAsync({ workspaceId, userId });
+      await removeMember.mutateAsync({ workspaceId, memberId });
       toast.success(`${name} has been removed`);
-    } catch (error) {
+    } catch {
       toast.error('Failed to remove member');
     }
   };
@@ -250,9 +249,11 @@ export default function WorkspaceMembersPage() {
               {/* Avatar */}
               <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-lg font-medium">
                 {member.user.avatar ? (
-                  <img
+                  <Image
                     src={member.user.avatar}
                     alt={member.user.name}
+                    width={48}
+                    height={48}
                     className="h-full w-full rounded-full object-cover"
                   />
                 ) : (
@@ -294,7 +295,7 @@ export default function WorkspaceMembersPage() {
                       return (
                         <DropdownMenuItem
                           key={role}
-                          onClick={() => handleUpdateRole(member.user.id, role)}
+                          onClick={() => handleUpdateRole(member.id, role)}
                         >
                           <info.icon className={cn('h-4 w-4 mr-2', info.color)} />
                           Make {info.label}
@@ -304,7 +305,7 @@ export default function WorkspaceMembersPage() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="text-red-500"
-                      onClick={() => handleRemoveMember(member.user.id, member.user.name)}
+                      onClick={() => handleRemoveMember(member.id, member.user.name)}
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Remove

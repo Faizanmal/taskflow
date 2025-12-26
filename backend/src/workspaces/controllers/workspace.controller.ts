@@ -94,10 +94,7 @@ export class WorkspaceController {
    * GET /workspaces/:id - Get workspace by ID
    */
   @Get(':id')
-  async findOne(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async findOne(@Param('id') id: string, @CurrentUser('id') userId: string) {
     const workspace = await this.workspaceService.findOne(id, userId);
     return {
       success: true,
@@ -142,10 +139,7 @@ export class WorkspaceController {
    */
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async delete(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async delete(@Param('id') id: string, @CurrentUser('id') userId: string) {
     await this.workspaceService.delete(id, userId);
     return {
       success: true,
@@ -230,10 +224,7 @@ export class WorkspaceController {
    */
   @Post(':id/leave')
   @HttpCode(HttpStatus.OK)
-  async leave(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async leave(@Param('id') id: string, @CurrentUser('id') userId: string) {
     await this.workspaceService.leave(id, userId);
     return {
       success: true,

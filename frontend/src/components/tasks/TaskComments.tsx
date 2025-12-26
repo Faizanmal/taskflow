@@ -49,7 +49,7 @@ export function TaskComments({ taskId, workspaceMembers = [] }: TaskCommentsProp
       setNewComment('');
       setReplyingTo(null);
       toast.success('Comment added');
-    } catch (error) {
+    } catch {
       toast.error('Failed to add comment');
     }
   };
@@ -179,7 +179,7 @@ function CommentItem({
       });
       setIsEditing(false);
       toast.success('Comment updated');
-    } catch (error) {
+    } catch {
       toast.error('Failed to update comment');
     }
   };
@@ -190,7 +190,7 @@ function CommentItem({
     try {
       await deleteComment.mutateAsync({ id: comment.id, taskId });
       toast.success('Comment deleted');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete comment');
     }
   };
@@ -325,7 +325,8 @@ function extractMentions(content: string, members: UserBasic[]): string[] {
   let match;
 
   while ((match = mentionRegex.exec(content)) !== null) {
-    const username = match[1].toLowerCase();
+    const username = match[1]?.toLowerCase();
+    if (!username) continue;
     const member = members.find(
       (m) => m.name.toLowerCase().includes(username) || m.email.toLowerCase().includes(username)
     );

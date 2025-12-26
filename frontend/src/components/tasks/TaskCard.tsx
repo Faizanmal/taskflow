@@ -20,6 +20,9 @@ interface TaskCardProps {
   onDelete: (id: string) => void;
   onStatusChange: (id: string, status: Task['status']) => void;
   index?: number;
+  isSelected?: boolean;
+  onSelect?: (selected: boolean) => void;
+  onClick?: () => void;
 }
 
 export default function TaskCard({

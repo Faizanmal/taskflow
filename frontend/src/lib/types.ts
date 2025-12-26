@@ -141,8 +141,8 @@ export interface UpdateTaskInput {
 }
 
 export interface TaskFilters {
-  status?: TaskStatus;
-  priority?: TaskPriority;
+  status?: TaskStatus[];
+  priority?: TaskPriority[];
   sortBy?: 'dueDate' | 'createdAt' | 'priority' | 'status';
   sortOrder?: 'asc' | 'desc';
   view?: 'all' | 'assigned' | 'created' | 'overdue';

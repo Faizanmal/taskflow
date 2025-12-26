@@ -121,13 +121,13 @@ export class NotificationService {
     userId: string;
     type: string;
     message: string;
-    data?: string;
+    data: Record<string, any> | undefined;
   }): Promise<Notification> {
     const notification = await this.notificationRepository.create({
       type: data.type,
       message: data.message,
       userId: data.userId,
-      data: data.data ? JSON.parse(data.data) : {},
+      ...(data.data && { data: data.data }),
     });
 
     this.eventsGateway.emitNotification(data.userId, notification);

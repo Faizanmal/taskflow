@@ -63,7 +63,7 @@ export function NotificationSettings({ className }: NotificationSettingsProps) {
       const response = await notificationsAPI.getPreferences();
       const data = response.data?.data ?? {};
       setPreferences({ ...DEFAULT_PREFERENCES, ...data });
-    } catch (error) {
+    } catch {
       // Use defaults if API fails
       setPreferences(DEFAULT_PREFERENCES);
     } finally {
@@ -82,10 +82,10 @@ export function NotificationSettings({ className }: NotificationSettingsProps) {
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      await notificationsAPI.updatePreferences(preferences as Record<string, unknown>);
+      await notificationsAPI.updatePreferences(preferences);
       setHasChanges(false);
       toast.success('Notification preferences saved');
-    } catch (error) {
+    } catch {
       toast.error('Failed to save preferences');
     } finally {
       setIsSaving(false);

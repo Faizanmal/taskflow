@@ -1,19 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
 import {
   FileText,
   Plus,
   Search,
   Copy,
   Trash2,
-  Edit2,
   Loader2,
   Clock,
   Flag,
-  Repeat,
   MoreVertical,
   Users,
   Lock,
@@ -21,7 +17,6 @@ import {
 import {
   useTemplates,
   useCreateTemplate,
-  useUpdateTemplate,
   useDeleteTemplate,
   useCreateTaskFromTemplate,
 } from '@/hooks/useTemplates';
@@ -30,7 +25,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
@@ -53,6 +47,7 @@ import {
   SelectValue,
 } from '@/components/ui/radix-select';
 import { cn } from '@/lib/utils';
+import { TaskPriority } from '@/lib/types';
 import toast from 'react-hot-toast';
 
 const PRIORITY_COLORS = {
@@ -84,7 +79,7 @@ export default function TemplatesPage() {
         data: { workspaceId: selectedWorkspace },
       });
       toast.success('Task created from template');
-    } catch (error) {
+    } catch {
       toast.error('Failed to create task');
     }
   };
@@ -95,7 +90,7 @@ export default function TemplatesPage() {
     try {
       await deleteTemplate.mutateAsync(id);
       toast.success('Template deleted');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete template');
     }
   };
@@ -309,14 +304,14 @@ function CreateTemplateForm({ workspaces, onSuccess }: CreateTemplateFormProps) 
         description: formData.description || undefined,
         taskTitle: formData.taskTitle,
         taskDescription: formData.taskDescription || undefined,
-        taskPriority: formData.taskPriority as any,
+        taskPriority: formData.taskPriority as TaskPriority,
         estimatedTime: formData.estimatedTime ? parseInt(formData.estimatedTime) : undefined,
         isPublic: formData.isPublic,
         workspaceId: formData.workspaceId || undefined,
       });
       toast.success('Template created');
       onSuccess();
-    } catch (error) {
+    } catch {
       toast.error('Failed to create template');
     }
   };

@@ -41,8 +41,8 @@ export function useTasks(filters: TaskFilters = {}) {
     queryKey: taskKeys.list(filters),
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (filters.status) params.append('status', filters.status);
-      if (filters.priority) params.append('priority', filters.priority);
+      if (filters.status) filters.status.forEach(s => params.append('status', s));
+      if (filters.priority) filters.priority.forEach(p => params.append('priority', p));
       if (filters.sortBy) params.append('sortBy', filters.sortBy);
       if (filters.sortOrder) params.append('sortOrder', filters.sortOrder);
       if (filters.view) params.append('view', filters.view);

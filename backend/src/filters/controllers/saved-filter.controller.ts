@@ -62,10 +62,7 @@ export class SavedFilterController {
    * GET /filters/:id - Get filter by ID
    */
   @Get(':id')
-  async findOne(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async findOne(@Param('id') id: string, @CurrentUser('id') userId: string) {
     const filter = await this.filterService.findOne(id, userId);
     return {
       success: true,
@@ -95,10 +92,7 @@ export class SavedFilterController {
    */
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async delete(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async delete(@Param('id') id: string, @CurrentUser('id') userId: string) {
     await this.filterService.delete(id, userId);
     return {
       success: true,

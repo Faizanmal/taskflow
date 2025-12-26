@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { meetingsAPI, actionItemsAPI, notesAPI, tagsAPI, activitiesAPI, templatesAPI, integrationsAPI, notificationLogsAPI, calendarAPI, workspacesAPI } from '@/lib/api';
-import type { Meeting, ActionItem, Tag, MeetingTemplate, NotificationIntegration, CalendarConnection, Workspace, WorkspaceMember } from '@/lib/api';
+import type { Meeting, ActionItem, Tag, MeetingTemplate, NotificationIntegration, CalendarConnection, Workspace } from '@/lib/api';
 
 // Meetings
 export function useMeetings(params?: {
@@ -598,7 +598,7 @@ export function useDeclineWorkspaceInvitation() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (_token: string) => {
+    mutationFn: async () => {
       // No decline endpoint - invitations just expire
       return;
     },

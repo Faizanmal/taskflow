@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { formatDistanceToNow } from 'date-fns';
+import Image from 'next/image';
 import {
   Upload,
   File,
@@ -69,7 +70,7 @@ export function TaskAttachments({ taskId, className }: TaskAttachmentsProps) {
         try {
           await uploadAttachment.mutateAsync({ taskId, file });
           toast.success(`${file.name} uploaded`);
-        } catch (error) {
+        } catch {
           toast.error(`Failed to upload ${file.name}`);
         } finally {
           setUploadingFiles((prev) => prev.filter((f) => f !== file.name));
@@ -102,7 +103,7 @@ export function TaskAttachments({ taskId, className }: TaskAttachmentsProps) {
     try {
       await deleteAttachment.mutateAsync({ id: attachment.id, taskId });
       toast.success('Attachment deleted');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete attachment');
     }
   };
@@ -113,7 +114,7 @@ export function TaskAttachments({ taskId, className }: TaskAttachmentsProps) {
         id: attachment.id,
         filename: attachment.originalName,
       });
-    } catch (error) {
+    } catch {
       toast.error('Failed to download attachment');
     }
   };
@@ -213,9 +214,11 @@ export function TaskAttachments({ taskId, className }: TaskAttachmentsProps) {
               >
                 {isImage ? (
                   <div className="h-12 w-12 rounded overflow-hidden flex-shrink-0">
-                    <img
+                    <Image
                       src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${attachment.filename}`}
                       alt={attachment.originalName}
+                      width={48}
+                      height={48}
                       className="h-full w-full object-cover"
                     />
                   </div>

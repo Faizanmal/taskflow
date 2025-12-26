@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import {
   TimeLogRepository,
   TimeLogWithRelations,
@@ -149,7 +150,7 @@ export class TimeTrackingService {
       throw new ForbiddenException('You can only edit your own time logs');
     }
 
-    const updateData: any = {};
+    const updateData: Prisma.TimeLogUpdateInput = {};
 
     if (dto.description !== undefined) {
       updateData.description = dto.description;
@@ -176,9 +177,7 @@ export class TimeTrackingService {
       const startTime = dto.startTime
         ? new Date(dto.startTime)
         : timeLog.startTime;
-      const endTime = dto.endTime
-        ? new Date(dto.endTime)
-        : timeLog.endTime;
+      const endTime = dto.endTime ? new Date(dto.endTime) : timeLog.endTime;
 
       if (startTime && endTime) {
         updateData.duration = Math.round(
@@ -228,11 +227,12 @@ export class TimeTrackingService {
     userId: string,
     filters: TimeReportFilterDto,
   ): Promise<TimeLogWithRelations[]> {
-    const queryFilters: { startDate?: Date; endDate?: Date; taskId?: string } = {};
+    const queryFilters: { startDate?: Date; endDate?: Date; taskId?: string } =
+      {};
     if (filters.startDate) queryFilters.startDate = new Date(filters.startDate);
     if (filters.endDate) queryFilters.endDate = new Date(filters.endDate);
     if (filters.taskId) queryFilters.taskId = filters.taskId;
-    
+
     return this.timeLogRepository.findAllForUser(userId, queryFilters);
   }
 
@@ -269,7 +269,11 @@ export class TimeTrackingService {
   /**
    * Get productivity stats
    */
-  async getProductivityStats(userId: string, startDate: string, endDate: string) {
+  async getProductivityStats(
+    userId: string,
+    startDate: string,
+    endDate: string,
+  ) {
     return this.timeLogRepository.getProductivityStats(
       userId,
       new Date(startDate),

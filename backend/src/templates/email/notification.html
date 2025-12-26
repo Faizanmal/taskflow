@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{subject}}</title>
+  <style>
+    /* Reset */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; }
+    
+    /* Base styles */
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #374151;
+      background-color: #f3f4f6;
+    }
+    
+    .wrapper {
+      width: 100%;
+      padding: 20px 0;
+      background-color: #f3f4f6;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      padding: 32px 24px;
+      text-align: center;
+    }
+    
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      text-decoration: none;
+    }
+    
+    .content {
+      padding: 32px 24px;
+    }
+    
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 16px 0;
+    }
+    
+    .text {
+      font-size: 16px;
+      color: #4b5563;
+      margin: 0 0 24px 0;
+    }
+    
+    .button-wrapper {
+      text-align: center;
+      margin: 32px 0;
+    }
+    
+    .button {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    
+    .task-card {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    
+    .task-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 8px 0;
+    }
+    
+    .task-meta {
+      font-size: 14px;
+      color: #6b7280;
+      margin: 4px 0;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .badge-priority-urgent { background-color: #fef2f2; color: #dc2626; }
+    .badge-priority-high { background-color: #fef3c7; color: #d97706; }
+    .badge-priority-medium { background-color: #dbeafe; color: #2563eb; }
+    .badge-priority-low { background-color: #f3f4f6; color: #6b7280; }
+    
+    .badge-status-todo { background-color: #f3f4f6; color: #6b7280; }
+    .badge-status-inprogress { background-color: #dbeafe; color: #2563eb; }
+    .badge-status-inreview { background-color: #fef3c7; color: #d97706; }
+    .badge-status-completed { background-color: #dcfce7; color: #16a34a; }
+    
+    .divider {
+      height: 1px;
+      background-color: #e5e7eb;
+      margin: 24px 0;
+    }
+    
+    .footer {
+      padding: 24px;
+      text-align: center;
+      background-color: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .footer-text {
+      font-size: 14px;
+      color: #6b7280;
+      margin: 0 0 8px 0;
+    }
+    
+    .footer-link {
+      color: #6366f1;
+      text-decoration: none;
+    }
+    
+    .unsubscribe {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 16px;
+    }
+    
+    @media only screen and (max-width: 640px) {
+      .container {
+        margin: 0 12px;
+      }
+      .content {
+        padding: 24px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <table class="container" role="presentation" cellpadding="0" cellspacing="0">
+      <!-- Header -->
+      <tr>
+        <td class="header">
+          <a href="{{appUrl}}" class="logo">TaskFlow</a>
+        </td>
+      </tr>
+      
+      <!-- Content -->
+      <tr>
+        <td class="content">
+          <h1 class="title">{{title}}</h1>
+          <p class="text">{{message}}</p>
+          
+          {{#if task}}
+          <div class="task-card">
+            <h2 class="task-title">{{task.title}}</h2>
+            {{#if task.description}}
+            <p class="task-meta">{{task.description}}</p>
+            {{/if}}
+            <div style="margin-top: 12px;">
+              {{#if task.priority}}
+              <span class="badge badge-priority-{{task.priority}}">{{task.priority}}</span>
+              {{/if}}
+              {{#if task.status}}
+              <span class="badge badge-status-{{task.status}}">{{task.status}}</span>
+              {{/if}}
+            </div>
+            {{#if task.dueDate}}
+            <p class="task-meta" style="margin-top: 12px;">
+              📅 Due: {{task.dueDate}}
+            </p>
+            {{/if}}
+          </div>
+          {{/if}}
+          
+          {{#if actionUrl}}
+          <div class="button-wrapper">
+            <a href="{{actionUrl}}" class="button">{{actionText}}</a>
+          </div>
+          {{/if}}
+          
+          {{#if additionalText}}
+          <p class="text">{{additionalText}}</p>
+          {{/if}}
+        </td>
+      </tr>
+      
+      <!-- Footer -->
+      <tr>
+        <td class="footer">
+          <p class="footer-text">
+            You received this email because you are a member of TaskFlow.
+          </p>
+          <p class="footer-text">
+            <a href="{{settingsUrl}}" class="footer-link">Manage notification settings</a>
+          </p>
+          <p class="unsubscribe">
+            <a href="{{unsubscribeUrl}}" class="footer-link">Unsubscribe from these emails</a>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

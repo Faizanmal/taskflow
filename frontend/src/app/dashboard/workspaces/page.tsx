@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Plus,
   Users,
@@ -24,7 +25,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 export default function WorkspacesPage() {
@@ -46,7 +46,7 @@ export default function WorkspacesPage() {
     try {
       await deleteWorkspace.mutateAsync(id);
       toast.success('Workspace deleted');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete workspace');
     }
   };
@@ -59,7 +59,7 @@ export default function WorkspacesPage() {
     try {
       await leaveWorkspace.mutateAsync(id);
       toast.success('Left workspace');
-    } catch (error) {
+    } catch {
       toast.error('Failed to leave workspace');
     }
   };
@@ -201,10 +201,10 @@ export default function WorkspacesPage() {
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <Users className="h-4 w-4" />
-                  <span>{workspace._count.members} members</span>
+                  <span>{workspace._count?.members || 0} members</span>
                 </div>
                 <div className="text-sm text-gray-500">
-                  {workspace._count.tasks} tasks
+                  {workspace._count?.tasks || 0} tasks
                 </div>
               </div>
 
@@ -218,9 +218,11 @@ export default function WorkspacesPage() {
                       title={member.user.name}
                     >
                       {member.user.avatar ? (
-                        <img
+                        <Image
                           src={member.user.avatar}
                           alt={member.user.name}
+                          width={32}
+                          height={32}
                           className="h-full w-full rounded-full object-cover"
                         />
                       ) : (

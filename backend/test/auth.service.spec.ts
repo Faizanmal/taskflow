@@ -23,6 +23,8 @@ describe('AuthService', () => {
     password: 'hashedPassword123',
     name: 'Test User',
     avatar: null,
+    theme: 'system',
+    accentColor: 'blue',
     createdAt: new Date(),
     updatedAt: new Date(),
   };

@@ -90,7 +90,10 @@ export class WorkspaceService {
   /**
    * Get workspace by slug
    */
-  async findBySlug(slug: string, userId: string): Promise<WorkspaceWithMembers> {
+  async findBySlug(
+    slug: string,
+    userId: string,
+  ): Promise<WorkspaceWithMembers> {
     const workspace = await this.workspaceRepository.findBySlug(slug);
 
     if (!workspace) {
@@ -280,10 +283,10 @@ export class WorkspaceService {
             userId: admin.userId,
             type: 'WORKSPACE_MEMBER_JOINED',
             message: `A new member joined ${workspace.name}`,
-            data: JSON.stringify({
+            data: {
               workspaceId: workspace.id,
               workspaceName: workspace.name,
-            }),
+            },
           });
         }
       }

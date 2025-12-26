@@ -68,13 +68,8 @@ export class SubtaskController {
   async addDependency(
     @Param('taskId') taskId: string,
     @Body() dto: CreateDependencyDto,
-    @CurrentUser('id') userId: string,
   ) {
-    const dependency = await this.subtaskService.addDependency(
-      taskId,
-      dto,
-      userId,
-    );
+    const dependency = await this.subtaskService.addDependency(taskId, dto);
     return {
       success: true,
       message: 'Dependency added successfully',
@@ -127,11 +122,8 @@ export class SubtaskController {
    * POST /tasks/reorder - Reorder task (Kanban)
    */
   @Post('reorder')
-  async reorderTask(
-    @Body() dto: ReorderTasksDto,
-    @CurrentUser('id') userId: string,
-  ) {
-    const task = await this.subtaskService.reorderTask(dto, userId);
+  async reorderTask(@Body() dto: ReorderTasksDto) {
+    const task = await this.subtaskService.reorderTask(dto);
     return {
       success: true,
       message: 'Task reordered successfully',

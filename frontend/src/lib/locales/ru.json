@@ -1,0 +1,163 @@
+{
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Произошла ошибка",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "create": "Создать",
+    "update": "Обновить",
+    "close": "Закрыть",
+    "confirm": "Подтвердить",
+    "search": "Поиск",
+    "noResults": "Результаты не найдены",
+    "logout": "Выйти",
+    "settings": "Настройки",
+    "profile": "Профиль"
+  },
+  "auth": {
+    "login": "Вход",
+    "register": "Регистрация",
+    "email": "Email",
+    "password": "Пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "forgotPassword": "Забыли пароль?",
+    "loginSuccess": "Вход выполнен успешно",
+    "registerSuccess": "Регистрация прошла успешно",
+    "logoutSuccess": "Выход выполнен успешно"
+  },
+  "navigation": {
+    "dashboard": "Панель",
+    "tasks": "Задачи",
+    "workspaces": "Рабочие пространства",
+    "templates": "Шаблоны",
+    "analytics": "Аналитика",
+    "notifications": "Уведомления",
+    "messages": "Сообщения"
+  },
+  "tasks": {
+    "title": "Задачи",
+    "createTask": "Создать задачу",
+    "editTask": "Редактировать задачу",
+    "deleteTask": "Удалить задачу",
+    "taskTitle": "Название задачи",
+    "description": "Описание",
+    "dueDate": "Срок",
+    "assignee": "Исполнитель",
+    "noTasks": "Задачи не найдены",
+    "taskCreated": "Задача успешно создана",
+    "taskUpdated": "Задача успешно обновлена",
+    "taskDeleted": "Задача успешно удалена"
+  },
+  "status": {
+    "TODO": "К выполнению",
+    "IN_PROGRESS": "В работе",
+    "IN_REVIEW": "На проверке",
+    "COMPLETED": "Завершено"
+  },
+  "priority": {
+    "LOW": "Низкий",
+    "MEDIUM": "Средний",
+    "HIGH": "Высокий",
+    "URGENT": "Срочный"
+  },
+  "filters": {
+    "taskFilters": "Фильтры задач",
+    "allStatuses": "Все статусы",
+    "allPriorities": "Все приоритеты",
+    "allTasks": "Все задачи",
+    "assignedToMe": "Назначенные мне",
+    "createdByMe": "Созданные мной",
+    "overdue": "Просроченные",
+    "dateCreated": "Дата создания",
+    "dueDate": "Срок",
+    "priority": "Приоритет",
+    "status": "Статус",
+    "sortBy": "Сортировка",
+    "asc": "Возр",
+    "desc": "Убыв",
+    "searchPlaceholder": "Поиск задач...",
+    "searchTasks": "Поиск задач",
+    "clearSearch": "Очистить поиск",
+    "selectView": "Выбрать вид",
+    "selectStatus": "Выбрать статус",
+    "selectPriority": "Выбрать приоритет",
+    "selectSort": "Выбрать сортировку",
+    "sortAscending": "По возрастанию",
+    "sortDescending": "По убыванию"
+  },
+  "workspaces": {
+    "title": "Рабочие пространства",
+    "createWorkspace": "Создать пространство",
+    "editWorkspace": "Редактировать пространство",
+    "deleteWorkspace": "Удалить пространство",
+    "members": "Участники",
+    "inviteMember": "Пригласить участника",
+    "noWorkspaces": "Рабочие пространства не найдены"
+  },
+  "commandPalette": {
+    "title": "Командная палитра",
+    "placeholder": "Введите команду или поиск...",
+    "noResults": "Результаты не найдены",
+    "tasks": "Задачи",
+    "workspaces": "Рабочие пространства",
+    "users": "Пользователи",
+    "actions": "Действия",
+    "recentSearches": "Последние поиски"
+  },
+  "bulk": {
+    "selectAll": "Выбрать все",
+    "deselectAll": "Снять выделение",
+    "selected": "Выбрано: {{count}}",
+    "changeStatus": "Изменить статус",
+    "changePriority": "Изменить приоритет",
+    "changeAssignee": "Изменить исполнителя",
+    "deleteSelected": "Удалить выбранные",
+    "confirmDelete": "Вы уверены, что хотите удалить {{count}} задач?"
+  },
+  "export": {
+    "exportTasks": "Экспорт задач",
+    "exportCSV": "Экспорт в CSV",
+    "exportJSON": "Экспорт в JSON",
+    "importTasks": "Импорт задач",
+    "dragDropFile": "Перетащите файл сюда или нажмите для выбора"
+  },
+  "theme": {
+    "light": "Светлая",
+    "dark": "Тёмная",
+    "system": "Системная",
+    "selectTheme": "Выбор темы"
+  },
+  "accessibility": {
+    "skipToContent": "Перейти к основному содержимому",
+    "mainNavigation": "Основная навигация",
+    "closeModal": "Закрыть модальное окно",
+    "openMenu": "Открыть меню",
+    "loading": "Загрузка, пожалуйста подождите"
+  },
+  "notifications": {
+    "title": "Уведомления",
+    "markAllRead": "Отметить все как прочитанные",
+    "noNotifications": "Нет уведомлений",
+    "preferences": "Настройки уведомлений"
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "productivity": "Продуктивность",
+    "tasksCreated": "Создано задач",
+    "tasksCompleted": "Завершено задач",
+    "timeTracked": "Отслежено времени",
+    "streak": "Текущая серия",
+    "teamProductivity": "Продуктивность команды"
+  },
+  "security": {
+    "twoFactorAuth": "Двухфакторная аутентификация",
+    "enable2FA": "Включить 2FA",
+    "disable2FA": "Отключить 2FA",
+    "exportData": "Экспорт моих данных",
+    "deleteAccount": "Удалить аккаунт",
+    "gdprExport": "Скачать все данные (GDPR)",
+    "gdprDelete": "Навсегда удалить аккаунт и данные"
+  }
+}

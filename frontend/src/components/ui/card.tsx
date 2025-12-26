@@ -47,4 +47,24 @@ export const CardFooter = ({ children, className = '' }: CardFooterProps) => {
   return <div className={`px-6 py-4 border-t border-gray-200 ${className}`}>{children}</div>;
 };
 
-export default Card;
+export const CardContent = CardBody;
+
+interface CardTitleProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export const CardTitle = ({ children, className = '' }: CardTitleProps) => {
+  return <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>{children}</h3>;
+};
+
+interface CardDescriptionProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export const CardDescription = ({ children, className = '' }: CardDescriptionProps) => {
+  return <p className={`text-sm text-gray-600 ${className}`}>{children}</p>;
+};
+
+export { Card };

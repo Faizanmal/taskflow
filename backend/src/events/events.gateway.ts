@@ -157,15 +157,24 @@ export class EventsGateway
   /**
    * Emit workspace updated event
    */
-  emitWorkspaceUpdated(workspace: { id: string; name: string; [key: string]: any }): void {
+  emitWorkspaceUpdated(workspace: {
+    id: string;
+    name: string;
+    [key: string]: any;
+  }): void {
     this.server.emit('workspace:updated', workspace);
-    this.logger.debug(`Emitted workspace:updated for workspace ${workspace.id}`);
+    this.logger.debug(
+      `Emitted workspace:updated for workspace ${workspace.id}`,
+    );
   }
 
   /**
    * Emit comment created event
    */
-  emitCommentCreated(taskId: string, comment: { id: string; [key: string]: any }): void {
+  emitCommentCreated(
+    taskId: string,
+    comment: { id: string; [key: string]: any },
+  ): void {
     this.server.emit('comment:created', { taskId, comment });
     this.logger.debug(`Emitted comment:created for task ${taskId}`);
   }
@@ -173,7 +182,10 @@ export class EventsGateway
   /**
    * Emit comment updated event
    */
-  emitCommentUpdated(taskId: string, comment: { id: string; [key: string]: any }): void {
+  emitCommentUpdated(
+    taskId: string,
+    comment: { id: string; [key: string]: any },
+  ): void {
     this.server.emit('comment:updated', { taskId, comment });
     this.logger.debug(`Emitted comment:updated for task ${taskId}`);
   }

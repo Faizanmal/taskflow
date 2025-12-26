@@ -9,11 +9,10 @@ import toast from 'react-hot-toast';
 
 interface TimeTrackerProps {
   taskId: string;
-  taskTitle: string;
   className?: string;
 }
 
-export function TimeTracker({ taskId, taskTitle, className }: TimeTrackerProps) {
+export function TimeTracker({ taskId, className }: TimeTrackerProps) {
   const { data: runningTimer, isLoading } = useRunningTimer();
   const startTimer = useStartTimer();
   const stopTimer = useStopTimer();
@@ -42,7 +41,7 @@ export function TimeTracker({ taskId, taskTitle, className }: TimeTrackerProps) 
     try {
       await startTimer.mutateAsync({ taskId });
       toast.success('Timer started');
-    } catch (error) {
+    } catch {
       toast.error('Failed to start timer');
     }
   };
@@ -52,7 +51,7 @@ export function TimeTracker({ taskId, taskTitle, className }: TimeTrackerProps) 
       await stopTimer.mutateAsync();
       setElapsedTime(0);
       toast.success('Timer stopped and time logged');
-    } catch (error) {
+    } catch {
       toast.error('Failed to stop timer');
     }
   };
@@ -98,7 +97,7 @@ export function TimeTracker({ taskId, taskTitle, className }: TimeTrackerProps) 
         <Button
           size="sm"
           onClick={handleStart}
-          disabled={startTimer.isPending || (runningTimer && runningTimer.taskId !== taskId)}
+          disabled={startTimer.isPending || !!(runningTimer && runningTimer.taskId && runningTimer.taskId !== taskId)}
           className="btn-accent"
         >
           <Play className="h-4 w-4 mr-1" />
@@ -116,13 +115,11 @@ export function TimeTracker({ taskId, taskTitle, className }: TimeTrackerProps) 
 }
 
 interface PomodoroTimerProps {
-  taskId: string;
-  taskTitle?: string;
   onComplete?: (duration: number) => void;
   className?: string;
 }
 
-export function PomodoroTimer({ taskId, taskTitle: _taskTitle, onComplete, className }: PomodoroTimerProps) {
+export function PomodoroTimer({ onComplete, className }: PomodoroTimerProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes default
   const [isBreak, setIsBreak] = useState(false);
@@ -164,7 +161,7 @@ export function PomodoroTimer({ taskId, taskTitle: _taskTitle, onComplete, class
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isRunning, isBreak, sessionsCompleted, onComplete]);
+  }, [isRunning, isBreak, sessionsCompleted, onComplete, longBreakDuration, shortBreakDuration, workDuration]);
 
   const handleStart = () => setIsRunning(true);
   const handlePause = () => setIsRunning(false);

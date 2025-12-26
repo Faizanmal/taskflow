@@ -11,7 +11,7 @@ import {
   Clock,
   Loader2,
 } from 'lucide-react';
-import { SetRecurringInput } from '@/lib/types';
+import { SetRecurringInput, Task, TaskPriority } from '@/lib/types';
 import {
   useTemplates,
   useCreateTemplate,
@@ -61,7 +61,7 @@ export function TemplatesList({ workspaceId, className }: TemplatesListProps) {
         data: { workspaceId },
       });
       toast.success('Task created from template');
-    } catch (error) {
+    } catch {
       toast.error('Failed to create task from template');
     }
   };
@@ -72,7 +72,7 @@ export function TemplatesList({ workspaceId, className }: TemplatesListProps) {
     try {
       await deleteTemplate.mutateAsync(id);
       toast.success('Template deleted');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete template');
     }
   };
@@ -184,12 +184,20 @@ interface CreateTemplateFormProps {
 
 function CreateTemplateForm({ workspaceId, onSuccess }: CreateTemplateFormProps) {
   const createTemplate = useCreateTemplate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    description: string;
+    taskTitle: string;
+    taskDescription: string;
+    taskPriority: TaskPriority;
+    estimatedTime: string;
+    isPublic: boolean;
+  }>({
     name: '',
     description: '',
     taskTitle: '',
     taskDescription: '',
-    taskPriority: 'MEDIUM' as const,
+    taskPriority: 'MEDIUM',
     estimatedTime: '',
     isPublic: false,
   });
@@ -210,7 +218,7 @@ function CreateTemplateForm({ workspaceId, onSuccess }: CreateTemplateFormProps)
       });
       toast.success('Template created');
       onSuccess();
-    } catch (error) {
+    } catch {
       toast.error('Failed to create template');
     }
   };
@@ -260,7 +268,7 @@ function CreateTemplateForm({ workspaceId, onSuccess }: CreateTemplateFormProps)
           <Label>Priority</Label>
           <Select
             value={formData.taskPriority}
-            onValueChange={(value: any) => setFormData((prev) => ({ ...prev, taskPriority: value }))}
+            onValueChange={(value: TaskPriority) => setFormData((prev) => ({ ...prev, taskPriority: value }))}
           >
             <SelectTrigger>
               <SelectValue />
@@ -336,7 +344,7 @@ export function RecurringTaskSettings({ task, className }: RecurringTaskSettings
       });
       toast.success('Recurring schedule set');
       setIsEditing(false);
-    } catch (error) {
+    } catch {
       toast.error('Failed to set recurring schedule');
     }
   };
@@ -345,7 +353,7 @@ export function RecurringTaskSettings({ task, className }: RecurringTaskSettings
     try {
       await removeRecurring.mutateAsync(task.id);
       toast.success('Recurring schedule removed');
-    } catch (error) {
+    } catch {
       toast.error('Failed to remove recurring schedule');
     }
   };

@@ -62,7 +62,7 @@ export function SubtaskList({ taskId, className }: SubtaskListProps) {
       setNewSubtaskTitle('');
       setIsAdding(false);
       toast.success('Subtask added');
-    } catch (error) {
+    } catch {
       toast.error('Failed to add subtask');
     }
   };
@@ -74,7 +74,7 @@ export function SubtaskList({ taskId, className }: SubtaskListProps) {
         id: subtask.id,
         data: { status: newStatus },
       });
-    } catch (error) {
+    } catch {
       toast.error('Failed to update subtask');
     }
   };
@@ -206,8 +206,8 @@ export function TaskDependencies({ taskId, availableTasks = [], className }: Tas
       setSelectedTaskId('');
       setIsAdding(false);
       toast.success('Dependency added');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to add dependency');
+    } catch (error) {
+      toast.error((error as Error)?.message || 'Failed to add dependency');
     }
   };
 
@@ -215,7 +215,7 @@ export function TaskDependencies({ taskId, availableTasks = [], className }: Tas
     try {
       await removeDependency.mutateAsync({ taskId, dependencyTaskId });
       toast.success('Dependency removed');
-    } catch (error) {
+    } catch {
       toast.error('Failed to remove dependency');
     }
   };

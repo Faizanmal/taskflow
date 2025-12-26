@@ -40,7 +40,9 @@ export class TemplateService {
       ...(dto.description && { description: dto.description }),
       ...(dto.taskDescription && { taskDescription: dto.taskDescription }),
       ...(dto.taskPriority && { taskPriority: dto.taskPriority }),
-      ...(dto.estimatedTime !== undefined && { estimatedTime: dto.estimatedTime }),
+      ...(dto.estimatedTime !== undefined && {
+        estimatedTime: dto.estimatedTime,
+      }),
       ...(dto.isPublic !== undefined && { isPublic: dto.isPublic }),
       ...(dto.workspaceId && { workspaceId: dto.workspaceId }),
       ...(dto.subtasks && { subtaskTemplates: JSON.stringify(dto.subtasks) }),
@@ -252,10 +254,7 @@ export class TemplateService {
       where: {
         isRecurring: true,
         status: 'COMPLETED',
-        OR: [
-          { recurringEndDate: null },
-          { recurringEndDate: { gte: now } },
-        ],
+        OR: [{ recurringEndDate: null }, { recurringEndDate: { gte: now } }],
       },
     });
 
@@ -299,10 +298,7 @@ export class TemplateService {
     return createdCount;
   }
 
-  private shouldCreateRecurrence(
-    task: Task,
-    now: Date,
-  ): boolean {
+  private shouldCreateRecurrence(task: Task, now: Date): boolean {
     if (!task.lastRecurrence) {
       return true;
     }
@@ -311,21 +307,31 @@ export class TemplateService {
     const interval = task.recurringInterval || 1;
 
     switch (task.recurringPattern) {
-      case 'DAILY':
+      case 'DAILY': {
         const daysDiff = Math.floor(
           (now.getTime() - lastRecurrence.getTime()) / (1000 * 60 * 60 * 24),
         );
         return daysDiff >= interval;
+      }
 
-      case 'WEEKLY':
+      case 'WEEKLY': {
         const weeksDiff = Math.floor(
-          (now.getTime() - lastRecurrence.getTime()) / (1000 * 60 * 60 * 24 * 7),
+          (now.getTime() - lastRecurrence.getTime()) /
+            (1000 * 60 * 60 * 24 * 7),
         );
         if (weeksDiff >= interval) {
           if (task.recurringDays) {
             try {
               const days = JSON.parse(task.recurringDays) as string[];
-              const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+              const dayNames = [
+                'SUN',
+                'MON',
+                'TUE',
+                'WED',
+                'THU',
+                'FRI',
+                'SAT',
+              ];
               const currentDay = dayNames[now.getDay()] ?? '';
               return days.includes(currentDay);
             } catch {
@@ -335,16 +341,19 @@ export class TemplateService {
           return true;
         }
         return false;
+      }
 
-      case 'MONTHLY':
+      case 'MONTHLY': {
         const monthsDiff =
           (now.getFullYear() - lastRecurrence.getFullYear()) * 12 +
           (now.getMonth() - lastRecurrence.getMonth());
         return monthsDiff >= interval;
+      }
 
-      case 'YEARLY':
+      case 'YEARLY': {
         const yearsDiff = now.getFullYear() - lastRecurrence.getFullYear();
         return yearsDiff >= interval;
+      }
 
       default:
         return false;
