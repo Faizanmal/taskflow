@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
 export interface KeyboardShortcut {
   key: string;
@@ -33,7 +33,10 @@ export function useKeyboardShortcuts(shortcuts: KeyboardShortcut[] | Record<stri
   }, [shortcuts]);
 
   const shortcutsRef = useRef(normalizedShortcuts);
-  shortcutsRef.current = normalizedShortcuts;
+
+  useEffect(() => {
+    shortcutsRef.current = normalizedShortcuts;
+  }, [normalizedShortcuts]);
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     // Ignore shortcuts when typing in inputs

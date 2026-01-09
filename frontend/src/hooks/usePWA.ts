@@ -15,16 +15,11 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 
 export function usePWA() {
   const [isInstallable, setIsInstallable] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(() => window.matchMedia('(display-mode: standalone)').matches);
   const [isOnline, setIsOnline] = useState(true);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setIsInstalled(true);
-    }
-
     // Listen for install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
@@ -49,6 +44,7 @@ export function usePWA() {
     window.addEventListener('offline', handleOffline);
 
     // Initial online status
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsOnline(navigator.onLine);
 
     return () => {
@@ -126,7 +122,7 @@ export async function subscribeToPush(): Promise<PushSubscription | null> {
 
       subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+        applicationServerKey: new Uint8Array(urlBase64ToUint8Array(vapidPublicKey)),
       });
     }
 
@@ -135,23 +131,6 @@ export async function subscribeToPush(): Promise<PushSubscription | null> {
     console.error('Failed to subscribe to push:', error);
     return null;
   }
-}
-
-// Helper to convert base64 to Uint8Array
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding)
-    .replace(/-/g, '+')
-    .replace(/_/g, '/');
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-
-  return outputArray;
 }
 
 // Type for BeforeInstallPromptEvent

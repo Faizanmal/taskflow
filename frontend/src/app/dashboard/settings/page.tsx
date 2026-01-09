@@ -16,6 +16,8 @@ import { AccentColorPicker } from '@/components/ui/accent-color-picker';
 import { NotificationSettings } from '@/components/settings/NotificationSettings';
 import { cn } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
+
 type SettingsSection = 'appearance' | 'notifications' | 'account' | 'privacy' | 'shortcuts' | 'help';
 
 const SECTIONS = [

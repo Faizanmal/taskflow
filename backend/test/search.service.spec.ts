@@ -68,9 +68,21 @@ describe('SearchService', () => {
 
       const result = await service.globalSearch(userId, query);
 
-      expect(mockSearchRepository.searchTasks).toHaveBeenCalledWith(userId, 'test', 10);
-      expect(mockSearchRepository.searchWorkspaces).toHaveBeenCalledWith(userId, 'test', 10);
-      expect(mockSearchRepository.searchUsers).toHaveBeenCalledWith(userId, 'test', 10);
+      expect(mockSearchRepository.searchTasks).toHaveBeenCalledWith(
+        userId,
+        'test',
+        10,
+      );
+      expect(mockSearchRepository.searchWorkspaces).toHaveBeenCalledWith(
+        userId,
+        'test',
+        10,
+      );
+      expect(mockSearchRepository.searchUsers).toHaveBeenCalledWith(
+        userId,
+        'test',
+        10,
+      );
       expect(result).toEqual({
         tasks: [{ id: 'task-1', title: 'Test Task' }],
         workspaces: [{ id: 'workspace-1', name: 'Test Workspace' }],
@@ -99,7 +111,11 @@ describe('SearchService', () => {
 
       await service.globalSearch('user-1', { q: 'test', limit: 5 });
 
-      expect(mockSearchRepository.searchTasks).toHaveBeenCalledWith('user-1', 'test', 5);
+      expect(mockSearchRepository.searchTasks).toHaveBeenCalledWith(
+        'user-1',
+        'test',
+        5,
+      );
     });
   });
 
@@ -118,7 +134,11 @@ describe('SearchService', () => {
 
       const result = await service.searchTasks(userId, 'test', filters);
 
-      expect(mockSearchRepository.searchTasksAdvanced).toHaveBeenCalledWith(userId, 'test', filters);
+      expect(mockSearchRepository.searchTasksAdvanced).toHaveBeenCalledWith(
+        userId,
+        'test',
+        filters,
+      );
       expect(result).toHaveLength(1);
     });
   });

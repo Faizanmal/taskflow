@@ -1,4 +1,11 @@
-import { IsString, IsOptional, MinLength, IsNumber, IsIn, IsUUID } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  MinLength,
+  IsNumber,
+  IsIn,
+  IsUUID,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -11,12 +18,16 @@ export class SearchQueryDto {
   @MinLength(2, { message: 'Search query must be at least 2 characters' })
   q!: string;
 
-  @ApiPropertyOptional({ description: 'Comma-separated types to search: tasks,workspaces,users' })
+  @ApiPropertyOptional({
+    description: 'Comma-separated types to search: tasks,workspaces,users',
+  })
   @IsOptional()
   @IsString()
   types?: string;
 
-  @ApiPropertyOptional({ description: 'Maximum results per type (default: 10)' })
+  @ApiPropertyOptional({
+    description: 'Maximum results per type (default: 10)',
+  })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()

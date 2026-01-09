@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { MessagingRepository, DirectMessage, Conversation } from '../repositories/messaging.repository';
+import {
+  MessagingRepository,
+  DirectMessage,
+  Conversation,
+} from '../repositories/messaging.repository';
 import { EventsGateway } from '../../events/events.gateway';
 import { SendMessageDto } from '../dto/messaging.dto';
 
@@ -29,7 +33,12 @@ export class MessagingService {
     limit?: number,
     before?: string,
   ): Promise<DirectMessage[]> {
-    return this.messagingRepository.getMessages(userId, otherUserId, limit, before);
+    return this.messagingRepository.getMessages(
+      userId,
+      otherUserId,
+      limit,
+      before,
+    );
   }
 
   /**
@@ -56,7 +65,10 @@ export class MessagingService {
   /**
    * Mark messages from a user as read
    */
-  async markAsRead(userId: string, senderId: string): Promise<{ markedCount: number }> {
+  async markAsRead(
+    userId: string,
+    senderId: string,
+  ): Promise<{ markedCount: number }> {
     const count = await this.messagingRepository.markAsRead(userId, senderId);
     return { markedCount: count };
   }

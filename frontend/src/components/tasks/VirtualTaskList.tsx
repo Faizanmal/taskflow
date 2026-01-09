@@ -12,6 +12,7 @@ interface VirtualTaskListProps {
   onTaskClick?: (task: Task) => void;
   onTaskUpdate?: (taskId: string, data: Partial<Task>) => void;
   onTaskDelete?: (taskId: string) => void;
+  onTaskEdit: (task: Task) => void;
   isLoading?: boolean;
   emptyMessage?: string;
 }
@@ -30,12 +31,14 @@ export const VirtualTaskList = memo(forwardRef<VirtuosoHandle, VirtualTaskListPr
       onTaskClick,
       onTaskUpdate,
       onTaskDelete,
+      onTaskEdit,
       isLoading,
       emptyMessage = 'No tasks found',
     },
     ref
   ) {
     // Render individual task item
+     
     const itemContent = useCallback(
       (index: number, task: Task) => (
         <div className="py-2 px-1">
@@ -44,12 +47,13 @@ export const VirtualTaskList = memo(forwardRef<VirtuosoHandle, VirtualTaskListPr
             isSelected={selectedTasks.includes(task.id)}
             onSelect={onSelectTask ? (selected) => onSelectTask(task.id, selected) : undefined}
             onClick={() => onTaskClick?.(task)}
-            onStatusChange={(status) => onTaskUpdate?.(task.id, { status })}
+            onStatusChange={(status) => onTaskUpdate?.(task.id, { status: status as Task['status'] })}
             onDelete={() => onTaskDelete?.(task.id)}
+            onEdit={onTaskEdit}
           />
         </div>
       ),
-      [selectedTasks, onSelectTask, onTaskClick, onTaskUpdate, onTaskDelete]
+      [selectedTasks, onSelectTask, onTaskClick, onTaskUpdate, onTaskDelete, onTaskEdit]
     );
 
     // Empty state

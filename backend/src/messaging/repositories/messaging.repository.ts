@@ -57,7 +57,7 @@ export class MessagingRepository {
   async getMessages(
     _userId: string,
     _otherUserId: string,
-    _limit: number = 50,
+    _limit?: number,
     _before?: string,
   ): Promise<DirectMessage[]> {
     // Placeholder implementation

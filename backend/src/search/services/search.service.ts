@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { SearchRepository, GlobalSearchResult } from '../repositories/search.repository';
+import {
+  SearchRepository,
+  GlobalSearchResult,
+} from '../repositories/search.repository';
 import { SearchQueryDto } from '../dto/search.dto';
 
 /**
@@ -85,6 +88,10 @@ export class SearchService {
       offset?: number;
     },
   ) {
-    return this.searchRepository.searchTasksAdvanced(userId, searchTerm, options);
+    return this.searchRepository.searchTasksAdvanced(
+      userId,
+      searchTerm,
+      options,
+    );
   }
 }

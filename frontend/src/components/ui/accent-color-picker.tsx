@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 import { useAccentColor, ACCENT_COLORS } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
@@ -9,6 +10,14 @@ interface AccentColorPickerProps {
 }
 
 export function AccentColorPicker({ className }: AccentColorPickerProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   const { accentColor, setAccentColor } = useAccentColor();
 
   return (

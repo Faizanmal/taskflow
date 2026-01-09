@@ -176,13 +176,19 @@ export class SearchRepository {
       (where.AND as Prisma.TaskWhereInput[]).push({ status: options.status });
     }
     if (options?.priority) {
-      (where.AND as Prisma.TaskWhereInput[]).push({ priority: options.priority });
+      (where.AND as Prisma.TaskWhereInput[]).push({
+        priority: options.priority,
+      });
     }
     if (options?.assigneeId) {
-      (where.AND as Prisma.TaskWhereInput[]).push({ assigneeId: options.assigneeId });
+      (where.AND as Prisma.TaskWhereInput[]).push({
+        assigneeId: options.assigneeId,
+      });
     }
     if (options?.workspaceId) {
-      (where.AND as Prisma.TaskWhereInput[]).push({ workspaceId: options.workspaceId });
+      (where.AND as Prisma.TaskWhereInput[]).push({
+        workspaceId: options.workspaceId,
+      });
     }
 
     return this.prisma.task.findMany({

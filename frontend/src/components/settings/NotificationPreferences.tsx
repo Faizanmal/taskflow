@@ -18,7 +18,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/radix-select';
 import {
   Bell,
   Mail,
@@ -122,6 +122,7 @@ export default function NotificationPreferences() {
 
   useEffect(() => {
     if (data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreferences(data);
     }
   }, [data]);

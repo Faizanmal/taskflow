@@ -1,14 +1,11 @@
 'use client';
 
-import { useCallback, useRef, CSSProperties } from 'react';
-import { FixedSizeList } from 'react-window';
+import { useCallback, useRef } from 'react';
+import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { Task } from '@/lib/types';
 import TaskCard from './TaskCard';
 
-interface ListRowProps {
-  index: number;
-  style: CSSProperties;
-}
+interface ListRefType extends VirtuosoHandle {}
 
 interface VirtualizedTaskListProps {
   tasks: Task[];
@@ -17,6 +14,9 @@ interface VirtualizedTaskListProps {
   onTaskClick?: (task: Task) => void;
   selectedTaskIds?: string[];
   onTaskSelect?: (taskId: string) => void;
+  onTaskEdit: (task: Task) => void;
+  onTaskDelete: (id: string) => void;
+  onTaskStatusChange: (id: string, status: Task['status']) => void;
 }
 
 /**
@@ -31,37 +31,11 @@ export default function VirtualizedTaskList({
   onTaskClick,
   selectedTaskIds = [],
   onTaskSelect,
+  onTaskEdit,
+  onTaskDelete,
+  onTaskStatusChange,
 }: VirtualizedTaskListProps) {
-  const listRef = useRef<List>(null);
-
-  // Row renderer for virtualized list
-  const Row = useCallback(
-    ({ index, style }: ListRowProps) => {
-      const task = tasks[index];
-      if (!task) return null;
-      
-      const isSelected = selectedTaskIds.includes(task.id);
-
-      return (
-        <div style={style} className="px-2">
-          <div
-            className={`
-              transition-all duration-200
-              ${isSelected ? 'ring-2 ring-[var(--accent-color)] ring-offset-2' : ''}
-            `}
-          >
-            <TaskCard
-              task={task}
-              onClick={() => onTaskClick?.(task)}
-              isSelected={isSelected}
-              onSelect={() => onTaskSelect?.(task.id)}
-            />
-          </div>
-        </div>
-      );
-    },
-    [tasks, selectedTaskIds, onTaskClick, onTaskSelect]
-  );
+  const listRef = useRef<VirtuosoHandle>(null);
 
   // Handle keyboard navigation
   const handleKeyDown = useCallback(
@@ -76,22 +50,22 @@ export default function VirtualizedTaskList({
         case 'ArrowDown':
           e.preventDefault();
           if (focusedIndex < tasks.length - 1) {
-            listRef.current.scrollToItem(focusedIndex + 1, 'smart');
+            listRef.current?.scrollToIndex(focusedIndex + 1);
           }
           break;
         case 'ArrowUp':
           e.preventDefault();
           if (focusedIndex > 0) {
-            listRef.current.scrollToItem(focusedIndex - 1, 'smart');
+            listRef.current?.scrollToIndex(focusedIndex - 1);
           }
           break;
         case 'Home':
           e.preventDefault();
-          listRef.current.scrollToItem(0);
+          listRef.current?.scrollToIndex(0);
           break;
         case 'End':
           e.preventDefault();
-          listRef.current.scrollToItem(tasks.length - 1);
+          listRef.current?.scrollToIndex(tasks.length - 1);
           break;
       }
     },
@@ -117,16 +91,38 @@ export default function VirtualizedTaskList({
       tabIndex={0}
       className="focus:outline-none"
     >
-      <FixedSizeList
+      <Virtuoso
         ref={listRef}
+        data={tasks}
+        itemContent={(index) => {
+          const task = tasks[index];
+          if (!task) return null;
+          const isSelected = selectedTaskIds.includes(task.id);
+          return (
+            <div className="px-2">
+              <div
+                className={`
+                  transition-all duration-200
+                  ${isSelected ? 'ring-2 ring-[var(--accent-color)] ring-offset-2' : ''}
+                `}
+              >
+                <TaskCard
+                  task={task}
+                  onClick={() => onTaskClick?.(task)}
+                  isSelected={isSelected}
+                  onSelect={() => onTaskSelect?.(task.id)}
+                  onEdit={onTaskEdit}
+                  onDelete={onTaskDelete}
+                  onStatusChange={onTaskStatusChange}
+                />
+              </div>
+            </div>
+          );
+        }}
         height={height}
-        itemCount={tasks.length}
-        itemSize={itemHeight}
-        width="100%"
+        style={{ width: '100%' }}
         className="scrollbar-thin scrollbar-thumb-[var(--text-tertiary)] scrollbar-track-transparent"
-      >
-        {Row}
-      </FixedSizeList>
+      />
     </div>
   );
 }

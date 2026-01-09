@@ -45,7 +45,7 @@ describe('BulkActionsToolbar', () => {
 
   it('displays number of selected tasks', () => {
     render(
-      <BulkActionsToolbar tasks={[]} onSelectionChange={jest.fn()} tasks={[]} onSelectionChange={jest.fn()}
+      <BulkActionsToolbar
         tasks={[]}
         selectedTaskIds={selectedTaskIds}
         onSelectionChange={jest.fn()}
@@ -59,8 +59,10 @@ describe('BulkActionsToolbar', () => {
 
   it('renders clear selection button', () => {
     render(
-      <BulkActionsToolbar tasks={[]} onSelectionChange={jest.fn()} tasks={[]} onSelectionChange={jest.fn()}
+      <BulkActionsToolbar
+        tasks={[]}
         selectedTaskIds={selectedTaskIds}
+        onSelectionChange={jest.fn()}
         onClearSelection={mockOnClearSelection}
       />,
       { wrapper: createWrapper() }
@@ -72,8 +74,10 @@ describe('BulkActionsToolbar', () => {
   it('calls onClearSelection when clear button is clicked', async () => {
     const user = userEvent.setup();
     render(
-      <BulkActionsToolbar tasks={[]} onSelectionChange={jest.fn()} tasks={[]} onSelectionChange={jest.fn()}
+      <BulkActionsToolbar
+        tasks={[]}
         selectedTaskIds={selectedTaskIds}
+        onSelectionChange={jest.fn()}
         onClearSelection={mockOnClearSelection}
       />,
       { wrapper: createWrapper() }
@@ -87,8 +91,10 @@ describe('BulkActionsToolbar', () => {
 
   it('renders status update button', () => {
     render(
-      <BulkActionsToolbar tasks={[]} onSelectionChange={jest.fn()} tasks={[]} onSelectionChange={jest.fn()}
+      <BulkActionsToolbar
+        tasks={[]}
         selectedTaskIds={selectedTaskIds}
+        onSelectionChange={jest.fn()}
         onClearSelection={mockOnClearSelection}
       />,
       { wrapper: createWrapper() }
@@ -99,8 +105,10 @@ describe('BulkActionsToolbar', () => {
 
   it('renders priority update button', () => {
     render(
-      <BulkActionsToolbar tasks={[]} onSelectionChange={jest.fn()} tasks={[]} onSelectionChange={jest.fn()}
+      <BulkActionsToolbar
+        tasks={[]}
         selectedTaskIds={selectedTaskIds}
+        onSelectionChange={jest.fn()}
         onClearSelection={mockOnClearSelection}
       />,
       { wrapper: createWrapper() }
@@ -111,8 +119,10 @@ describe('BulkActionsToolbar', () => {
 
   it('renders delete button', () => {
     render(
-      <BulkActionsToolbar tasks={[]} onSelectionChange={jest.fn()} tasks={[]} onSelectionChange={jest.fn()}
+      <BulkActionsToolbar
+        tasks={[]}
         selectedTaskIds={selectedTaskIds}
+        onSelectionChange={jest.fn()}
         onClearSelection={mockOnClearSelection}
       />,
       { wrapper: createWrapper() }
@@ -123,8 +133,10 @@ describe('BulkActionsToolbar', () => {
 
   it('does not render when no tasks are selected', () => {
     const { container } = render(
-      <BulkActionsToolbar tasks={[]} onSelectionChange={jest.fn()} tasks={[]} onSelectionChange={jest.fn()}
+      <BulkActionsToolbar
+        tasks={[]}
         selectedTaskIds={[]}
+        onSelectionChange={jest.fn()}
         onClearSelection={mockOnClearSelection}
       />,
       { wrapper: createWrapper() }
@@ -136,8 +148,10 @@ describe('BulkActionsToolbar', () => {
 
   it('has proper accessibility attributes', () => {
     render(
-      <BulkActionsToolbar tasks={[]} onSelectionChange={jest.fn()} tasks={[]} onSelectionChange={jest.fn()}
+      <BulkActionsToolbar
+        tasks={[]}
         selectedTaskIds={selectedTaskIds}
+        onSelectionChange={jest.fn()}
         onClearSelection={mockOnClearSelection}
       />,
       { wrapper: createWrapper() }

@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/radix-select';
 import { Label } from '@/components/ui/label';
 import { Globe } from 'lucide-react';
 import { languages } from '@/lib/i18n';

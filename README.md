@@ -30,7 +30,7 @@ A **production-ready, full-stack collaborative task management application** bui
 
 ## 🎯 Overview
 
-TaskFlow is a collaborative task management application that enables teams to create, manage, and track tasks in real-time. Built as a demonstration of enterprise-grade full-stack development practices.
+Taskflow is a collaborative task management application that enables teams to create, manage, and track tasks in real-time. Built as a demonstration of enterprise-grade full-stack development practices.
 
 ### Key Highlights
 
@@ -65,6 +65,12 @@ TaskFlow is a collaborative task management application that enables teams to cr
 - ✅ Real-time notifications when assigned to tasks
 - ✅ Persistent notifications stored in database
 - ✅ Connection status indicator
+
+### Messaging
+- ✅ Direct messaging between users
+- ✅ Real-time chat with Socket.io
+- ✅ Conversation history
+- ✅ Unread message indicators
 
 ### Dashboard & Data Exploration
 - ✅ Statistics overview (assigned, completed, overdue tasks)
@@ -245,6 +251,16 @@ backend/
 | PATCH | `/api/notifications/:id/read` | Mark as read |
 | PATCH | `/api/notifications/read-all` | Mark all as read |
 
+### Messaging Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/messages/conversations` | Get all conversations |
+| GET | `/api/messages/:userId` | Get messages with a specific user |
+| POST | `/api/messages` | Send a direct message |
+| POST | `/api/messages/:userId/read` | Mark messages from a user as read |
+| GET | `/api/messages/unread/count` | Get unread message count |
+
 ### API Response Format
 
 ```typescript
@@ -289,6 +305,8 @@ const socket = io('http://localhost:3001/events', {
 | `task:updated` | Server → Client | Task object | Task was updated |
 | `task:deleted` | Server → Client | `{ id: string }` | Task was deleted |
 | `notification` | Server → Client | Notification object | New notification |
+| `message:new` | Server → Client | Message object | New direct message |
+| `message:read` | Server → Client | `{ senderId: string }` | Messages marked as read |
 | `ping` | Client → Server | - | Keep-alive ping |
 | `pong` | Server → Client | - | Keep-alive response |
 
@@ -310,7 +328,7 @@ Each authenticated user joins a private room (`user:{userId}`) for targeted noti
 
 ```bash
 git clone <repository-url>
-cd AbleSpace
+cd taskflow
 ```
 
 ### 2. Backend Setup
@@ -493,7 +511,7 @@ The backend includes unit tests for:
 
 ## � Repository
 
-- **GitHub**: [Faizanmal/taskflow](https://github.com/Faizanmal/taskflow)
+- **GitHub**: [your-username/taskflow](https://github.com/your-username/taskflow)
 
 ---
 
