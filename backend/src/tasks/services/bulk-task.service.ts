@@ -60,7 +60,10 @@ export class BulkTaskService {
 
     // Emit events for each updated task
     dto.taskIds.forEach((taskId) => {
-      this.eventsGateway.emitTaskUpdated({ id: taskId, ...updateData } as never);
+      this.eventsGateway.emitTaskUpdated({
+        id: taskId,
+        ...updateData,
+      } as never);
     });
 
     return {
@@ -174,8 +177,12 @@ export class BulkTaskService {
       where: { id: dto.taskId },
       data: updateData,
       include: {
-        creator: { select: { id: true, name: true, email: true, avatar: true } },
-        assignee: { select: { id: true, name: true, email: true, avatar: true } },
+        creator: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
+        assignee: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
       },
     });
 

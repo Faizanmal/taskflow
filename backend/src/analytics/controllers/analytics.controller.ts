@@ -1,11 +1,10 @@
+import { Controller, Get, Query, Param, UseGuards } from '@nestjs/common';
 import {
-  Controller,
-  Get,
-  Query,
-  Param,
-  UseGuards,
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { AnalyticsService } from '../services/analytics.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
@@ -25,7 +24,11 @@ export class AnalyticsController {
    */
   @Get('personal')
   @ApiOperation({ summary: 'Get personal productivity statistics' })
-  @ApiQuery({ name: 'days', required: false, description: 'Number of days (default: 30)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 30)',
+  })
   async getPersonalStats(
     @CurrentUser('id') userId: string,
     @Query('days') days?: number,
@@ -45,7 +48,11 @@ export class AnalyticsController {
    */
   @Get('team/:workspaceId')
   @ApiOperation({ summary: 'Get team productivity for a workspace' })
-  @ApiQuery({ name: 'days', required: false, description: 'Number of days (default: 30)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 30)',
+  })
   async getTeamProductivity(
     @CurrentUser('id') userId: string,
     @Param('workspaceId') workspaceId: string,
@@ -67,7 +74,11 @@ export class AnalyticsController {
    */
   @Get('daily')
   @ApiOperation({ summary: 'Get daily statistics over time' })
-  @ApiQuery({ name: 'days', required: false, description: 'Number of days (default: 30)' })
+  @ApiQuery({
+    name: 'days',
+    required: false,
+    description: 'Number of days (default: 30)',
+  })
   async getDailyStats(
     @CurrentUser('id') userId: string,
     @Query('days') days?: number,

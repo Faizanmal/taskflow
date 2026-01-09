@@ -5,12 +5,13 @@ import { ReactNode } from 'react';
 
 interface AlertProps {
   children: ReactNode;
-  variant?: 'info' | 'success' | 'warning' | 'error';
+  variant?: 'info' | 'success' | 'warning' | 'error' | 'destructive';
   title?: string;
   onClose?: () => void;
+  className?: string;
 }
 
-const Alert = ({ children, variant = 'info', title, onClose }: AlertProps) => {
+const Alert = ({ children, variant = 'info', title, onClose, className }: AlertProps) => {
   const variants = {
     info: {
       bg: 'bg-blue-50',
@@ -36,12 +37,18 @@ const Alert = ({ children, variant = 'info', title, onClose }: AlertProps) => {
       text: 'text-red-800',
       icon: <XCircle className="w-5 h-5 text-red-600" />,
     },
+    destructive: {
+      bg: 'bg-red-50',
+      border: 'border-red-200',
+      text: 'text-red-800',
+      icon: <XCircle className="w-5 h-5 text-red-600" />,
+    },
   };
 
   const config = variants[variant];
 
   return (
-    <div className={`rounded-lg border p-4 ${config.bg} ${config.border}`}>
+    <div className={`rounded-lg border p-4 ${config.bg} ${config.border} ${className || ''}`}>
       <div className="flex items-start gap-3">
         <div className="shrink-0">{config.icon}</div>
         <div className="flex-1">

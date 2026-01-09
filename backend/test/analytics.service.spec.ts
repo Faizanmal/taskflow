@@ -46,7 +46,7 @@ describe('AnalyticsService', () => {
       mockPrismaService.task.count
         .mockResolvedValueOnce(10) // tasks created
         .mockResolvedValueOnce(8); // tasks completed
-      
+
       mockPrismaService.timeLog.aggregate.mockResolvedValue({
         _sum: { duration: 3600 },
       });

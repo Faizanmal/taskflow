@@ -8,7 +8,12 @@ import {
   Query,
   Get,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { BulkTaskService } from '../services/bulk-task.service';
 import {
   BulkUpdateTasksDto,

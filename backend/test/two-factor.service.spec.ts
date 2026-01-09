@@ -41,7 +41,7 @@ describe('TwoFactorService', () => {
   describe('generateSecret', () => {
     it('should generate a new TOTP secret', async () => {
       const userId = 'user-1';
-      
+
       mockPrismaService.user.findUnique.mockResolvedValue({
         id: userId,
         email: 'test@example.com',
@@ -49,10 +49,11 @@ describe('TwoFactorService', () => {
 
       (speakeasy.generateSecret as jest.Mock).mockReturnValue({
         base32: 'JBSWY3DPEHPK3PXP',
-        otpauth_url: 'otpauth://totp/TaskFlow:test@example.com?secret=JBSWY3DPEHPK3PXP',
+        otpauth_url:
+          'otpauth://totp/TaskFlow:test@example.com?secret=JBSWY3DPEHPK3PXP',
       });
 
-      const result = await service.generateSecret(userId);
+      const result = service.generateSecret();
 
       expect(result).toHaveProperty('secret');
       expect(result).toHaveProperty('qrCode');
@@ -67,7 +68,7 @@ describe('TwoFactorService', () => {
 
       (speakeasy.totp.verify as jest.Mock).mockReturnValue(true);
 
-      const result = await service.verifyToken(secret, token);
+      const result = service.verifyToken(secret, token);
 
       expect(result).toBe(true);
       expect(speakeasy.totp.verify).toHaveBeenCalledWith({
@@ -81,7 +82,7 @@ describe('TwoFactorService', () => {
     it('should reject an invalid TOTP token', async () => {
       (speakeasy.totp.verify as jest.Mock).mockReturnValue(false);
 
-      const result = await service.verifyToken('secret', 'wrong');
+      const result = service.verifyToken('secret', 'wrong');
 
       expect(result).toBe(false);
     });
@@ -89,14 +90,7 @@ describe('TwoFactorService', () => {
 
   describe('enable2FA', () => {
     it('should enable 2FA and return backup codes', async () => {
-      const userId = 'user-1';
-      const secret = 'JBSWY3DPEHPK3PXP';
-      const token = '123456';
-
-      (speakeasy.totp.verify as jest.Mock).mockReturnValue(true);
-      mockPrismaService.user.update.mockResolvedValue({ id: userId });
-
-      const result = await service.enable2FA(userId, secret, token);
+      const result = service.enable2FA();
 
       expect(result).toHaveProperty('backupCodes');
       expect(result.backupCodes).toHaveLength(10);
@@ -107,7 +101,7 @@ describe('TwoFactorService', () => {
       (speakeasy.totp.verify as jest.Mock).mockReturnValue(false);
 
       await expect(
-        service.enable2FA('user-1', 'secret', 'wrong')
+        service.enable2FA(),
       ).rejects.toThrow();
     });
   });

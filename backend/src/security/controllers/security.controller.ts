@@ -15,12 +15,7 @@ import { TwoFactorService } from '../services/two-factor.service';
 import { GdprService } from '../services/gdpr.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
-import {
-  Enable2FADto,
-  Verify2FADto,
-  Disable2FADto,
-  DeleteAccountDto,
-} from '../dto/security.dto';
+import { Enable2FADto, Verify2FADto, Disable2FADto } from '../dto/security.dto';
 
 /**
  * Security Controller - Handles 2FA and GDPR endpoints
@@ -114,7 +109,7 @@ export class SecurityController {
   @ApiOperation({ summary: 'Export all user data (GDPR)' })
   async exportData(@CurrentUser('id') userId: string, @Res() res: Response) {
     const data = await this.gdprService.exportUserData(userId);
-    
+
     res.setHeader('Content-Type', 'application/json');
     res.setHeader(
       'Content-Disposition',
@@ -129,10 +124,7 @@ export class SecurityController {
   @Delete('gdpr/delete-account')
   @ApiOperation({ summary: 'Permanently delete account and all data (GDPR)' })
   @HttpCode(HttpStatus.OK)
-  async deleteAccount(
-    @CurrentUser('id') userId: string,
-    @Body() _dto: DeleteAccountDto,
-  ) {
+  async deleteAccount(@CurrentUser('id') userId: string) {
     // In production, verify password before deletion
     const result = await this.gdprService.deleteUserAccount(userId);
     return {
@@ -148,10 +140,7 @@ export class SecurityController {
   @Post('gdpr/anonymize')
   @ApiOperation({ summary: 'Anonymize user data (alternative to deletion)' })
   @HttpCode(HttpStatus.OK)
-  async anonymizeData(
-    @CurrentUser('id') userId: string,
-    @Body() _dto: DeleteAccountDto,
-  ) {
+  async anonymizeData(@CurrentUser('id') userId: string) {
     const result = await this.gdprService.anonymizeUserData(userId);
     return {
       success: true,

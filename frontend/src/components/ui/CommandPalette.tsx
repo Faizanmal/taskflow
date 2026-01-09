@@ -113,9 +113,10 @@ export function CommandPalette({ open, onOpenChange, onCreateTask }: CommandPale
     onOpenChange(false);
   }, [router, onOpenChange, quickActions]);
 
-  // Reset query when dialog closes
+  // Reset query when dialog opens
   useEffect(() => {
-    if (!open) {
+    if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setQuery('');
     }
   }, [open]);

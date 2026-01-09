@@ -139,9 +139,10 @@ export default function CommandPalette({
     setSearchQuery(value);
   }, []);
 
-  // Clear search when dialog closes
+  // Clear search when dialog opens
   useEffect(() => {
-    if (!open) {
+    if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSearchQuery('');
     }
   }, [open]);

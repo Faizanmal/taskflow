@@ -116,7 +116,9 @@ export class AnalyticsService {
       const totalTime = completedTasks.reduce((sum, task) => {
         return sum + (task.updatedAt.getTime() - task.createdAt.getTime());
       }, 0);
-      averageCompletionTime = Math.round(totalTime / completedTasks.length / (1000 * 60 * 60)); // Hours
+      averageCompletionTime = Math.round(
+        totalTime / completedTasks.length / (1000 * 60 * 60),
+      ); // Hours
     }
 
     // Calculate streak (simplified - consecutive days with completed tasks)
@@ -263,14 +265,19 @@ export class AnalyticsService {
   /**
    * Track usage event (for analytics)
    */
-  async trackEvent(
+  trackEvent(
     userId: string,
     eventType: string,
     metadata?: Record<string, unknown>,
   ) {
     // This would store in an analytics table
     // For now, just log
-    console.log('Analytics event:', { userId, eventType, metadata, timestamp: new Date() });
+    console.log('Analytics event:', {
+      userId,
+      eventType,
+      metadata,
+      timestamp: new Date(),
+    });
   }
 
   /**

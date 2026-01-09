@@ -4,7 +4,7 @@ import { X, Download, Wifi, WifiOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePWA } from '@/hooks/usePWA';
 import { Button } from '@/components/ui/button';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 /**
  * PWA Install Banner
@@ -13,19 +13,14 @@ import { useState, useEffect } from 'react';
 export function PWAInstallBanner() {
   const { t } = useTranslation();
   const { isInstallable, install } = usePWA();
-  const [dismissed, setDismissed] = useState(false);
-
-  useEffect(() => {
-    // Check if user has previously dismissed
+  const [dismissed, setDismissed] = useState(() => {
     const wasDismissed = localStorage.getItem('pwa-install-dismissed');
     if (wasDismissed) {
       const dismissedTime = parseInt(wasDismissed, 10);
-      // Show again after 7 days
-      if (Date.now() - dismissedTime < 7 * 24 * 60 * 60 * 1000) {
-        setDismissed(true);
-      }
+      return Date.now() - dismissedTime < 7 * 24 * 60 * 60 * 1000;
     }
-  }, []);
+    return false;
+  });
 
   const handleDismiss = () => {
     setDismissed(true);
